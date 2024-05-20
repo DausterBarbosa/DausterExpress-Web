@@ -1,7 +1,9 @@
 import React from 'react';
 
+import LoginPage from './pages/LoginPage';
+
 function App() {
-  return <p>asdfasdf</p>
+  return <LoginPage/>
 }
 
 export default App;
