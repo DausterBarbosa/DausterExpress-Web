@@ -10,7 +10,9 @@ import { styled } from '@mui/system';
 const LoginPageContainer = styled('div')({
     width: '100vw',
     height: '100vh',
-    background: '#4d148c',
+    backgroundImage: 'url(https://wallpaperbat.com/img/1449072-wp3704688-logistics-wallpaper.jpg)',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -22,7 +24,6 @@ const LoginPagePanelContainer = styled('form')({
     flexDirection: 'column',
     padding: '20px',
     alignItems: 'center',
-    borderRadius: '20px'
 })
 
 export default function LoginPage(){
