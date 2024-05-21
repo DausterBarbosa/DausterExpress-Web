@@ -1,9 +1,16 @@
 import React from 'react';
 
-import LoginPage from './pages/LoginPage';
+import ApplicationAppBar from './components/ApplicationAppBar';
+
+import OrdersPage from './pages/OrdersPage';
 
 function App() {
-  return <LoginPage/>
+  return (
+    <>
+      <ApplicationAppBar/>
+      <OrdersPage/>
+    </>
+  );
 }
 
 export default App;
