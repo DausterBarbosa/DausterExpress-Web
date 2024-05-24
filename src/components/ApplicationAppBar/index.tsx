@@ -7,7 +7,7 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 export default function ApplicationAppBar(){
     return (
-        <AppBar elevation={5} sx={{backgroundColor:'#4d148c', padding:'0 10px 0 20px', alignItems:'center', flexDirection:'row', justifyContent:'space-between'}}>
+        <AppBar position='fixed' elevation={5} sx={{backgroundColor:'#4d148c', padding:'0 10px 0 20px', alignItems:'center', flexDirection:'row', justifyContent:'space-between'}}>
             <Typography>
                 <Box component="span" sx={{color: '#FFF', fontWeight: 'bold', fontSize: '25px'}}>
                     Dauster

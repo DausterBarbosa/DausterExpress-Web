@@ -1,3 +1,6 @@
+import GlobalLayout from '../../components/GlobalLayout';
+import OrdersPageModal from '../../components/OrdersPageModal';
+
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import WatchLaterIcon from '@mui/icons-material/WatchLater';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
@@ -27,7 +30,7 @@ const OrdersPageContainer = styled('div')({
     width: '90vw',
     display: 'flex',
     flexDirection: 'column',
-    margin: '100px auto 0',
+    marginTop: '90px',
 });
 
 const StatusOrdersPageContainer = styled('div')({
@@ -60,136 +63,139 @@ const OrdersPageToolBarContainer = styled('div')({
 
 export default function OrdersPage(){
     return (
-        <OrdersPageContainer>
-            <StatusOrdersPageContainer>
-                <StatusContainer>
-                    <CheckCircleIcon sx={{fontSize: '40px', color: '#3e973f'}}/>
-                    <Box marginLeft={'5px'}>
-                        <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '17px'}}>ENTREGUES HOJE</Typography>
-                        <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '17px'}}>10</Typography>
-                    </Box>
-                </StatusContainer>
-                <StatusContainer>
-                    <WatchLaterIcon sx={{fontSize: '40px', color: '#613f7f'}}/>
-                    <Box marginLeft={'5px'}>
-                        <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '17px'}}>PENDENTES</Typography>
-                        <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '17px'}}>10</Typography>
-                    </Box>
-                </StatusContainer>
-                <StatusContainer>
-                    <LocalShippingIcon sx={{fontSize: '40px', color: '#ff6200'}}/>
-                    <Box marginLeft={'5px'}>
-                        <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '17px'}}>RETIRADOS HOJE</Typography>
-                        <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '17px'}}>10</Typography>
-                    </Box>
-                </StatusContainer>
-                <StatusContainer>
-                    <ErrorIcon sx={{fontSize: '40px', color: '#e21a47'}}/>
-                    <Box marginLeft={'5px'}>
-                        <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '17px'}}>PROBLEMAS</Typography>
-                        <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '17px'}}>10</Typography>
-                    </Box>
-                </StatusContainer>
-            </StatusOrdersPageContainer>
-            <OrdersPageToolBarContainer>
-                <TextField sx={{backgroundColor: '#FFF'}} size='small' placeholder='Pesquisar encomenda'/>
-                <Stack spacing={2} direction="row">
-                    <div>
-                        <Button variant="contained" sx={{backgroundColor: '#4d148c', fontWeight: 'bold'}}>FILTRAR</Button>
-                         <Menu
-                            open={false}
-                        >
-                            <MenuItem>Profile</MenuItem>
-                            <MenuItem>My account</MenuItem>
-                            <MenuItem>Logout</MenuItem>
-                        </Menu>
-                    </div>
-                    <Button variant="contained" sx={{backgroundColor: '#4d148c', fontWeight: 'bold'}}>ADICIONAR</Button>
-                </Stack>
-            </OrdersPageToolBarContainer>
-            <TableContainer component={Paper}>
-                <Table>
-                    <TableHead sx={{backgroundColor: '#4d148c'}}>
-                        <TableRow>
-                            <TableCell align="center" sx={{fontWeight: 'bold', color: '#FFF', fontSize: '14px'}}>DESTINATÁRIO</TableCell>
-                            <TableCell align="center" sx={{fontWeight: 'bold', color: '#FFF', fontSize: '14px'}}>ENTREGADOR</TableCell>
-                            <TableCell align="center" sx={{fontWeight: 'bold', color: '#FFF', fontSize: '14px'}}>CIDADE</TableCell>
-                            <TableCell align="center" sx={{fontWeight: 'bold', color: '#FFF', fontSize: '14px'}}>ESTADO</TableCell>
-                            <TableCell align="center" sx={{fontWeight: 'bold', color: '#FFF', fontSize: '14px'}}>STATUS</TableCell>
-                            <TableCell align="center" sx={{fontWeight: 'bold', color: '#FFF', fontSize: '14px'}}>AÇÕES</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        <TableRow>
-                            <TableCell align="center">asdfasdf</TableCell>
-                            <TableCell align="center">asdfasdf</TableCell>
-                            <TableCell align="center">asdfasdfasdf</TableCell>
-                            <TableCell align="center">asdfasdf</TableCell>
-                            <TableCell align="center">asdfasdfasdf</TableCell>
-                            <TableCell align="center">
-                                <IconButton sx={{ padding: 0, margin: 0 }}>
-                                    <MoreVertIcon/>
-                                </IconButton>
-                            </TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell align="center">asdfasdf</TableCell>
-                            <TableCell align="center">asdfasdf</TableCell>
-                            <TableCell align="center">asdfasdfasdf</TableCell>
-                            <TableCell align="center">asdfasdf</TableCell>
-                            <TableCell align="center">asdfasdfasdf</TableCell>
-                            <TableCell align="center">
-                                <IconButton sx={{ padding: 0, margin: 0 }}>
-                                    <MoreVertIcon/>
-                                </IconButton>
-                            </TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell align="center">asdfasdf</TableCell>
-                            <TableCell align="center">asdfasdf</TableCell>
-                            <TableCell align="center">asdfasdfasdf</TableCell>
-                            <TableCell align="center">asdfasdf</TableCell>
-                            <TableCell align="center">asdfasdfasdf</TableCell>
-                            <TableCell align="center">
-                                <IconButton sx={{ padding: 0, margin: 0 }}>
-                                    <MoreVertIcon/>
-                                </IconButton>
-                            </TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell align="center">asdfasdf</TableCell>
-                            <TableCell align="center">asdfasdf</TableCell>
-                            <TableCell align="center">asdfasdfasdf</TableCell>
-                            <TableCell align="center">asdfasdf</TableCell>
-                            <TableCell align="center">asdfasdfasdf</TableCell>
-                            <TableCell align="center">
-                                <IconButton sx={{ padding: 0, margin: 0 }}>
-                                    <MoreVertIcon/>
-                                </IconButton>
-                            </TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell align="center">asdfasdf</TableCell>
-                            <TableCell align="center">asdfasdf</TableCell>
-                            <TableCell align="center">asdfasdfasdf</TableCell>
-                            <TableCell align="center">asdfasdf</TableCell>
-                            <TableCell align="center">asdfasdfasdf</TableCell>
-                            <TableCell align="center">
-                                <IconButton sx={{ padding: 0, margin: 0 }}>
-                                    <MoreVertIcon/>
-                                </IconButton>
-                            </TableCell>
-                        </TableRow>
-                    </TableBody>
-                </Table>
-                <TablePagination
-                    count={10}
-                    onPageChange={() => {}}
-                    page={1}
-                    rowsPerPage={-1}
-                    rowsPerPageOptions={[]}
-                />
-            </TableContainer>
-        </OrdersPageContainer>
+        <GlobalLayout>
+            <OrdersPageModal/>
+            <OrdersPageContainer>
+                <StatusOrdersPageContainer>
+                    <StatusContainer>
+                        <CheckCircleIcon sx={{fontSize: '40px', color: '#3e973f'}}/>
+                        <Box marginLeft={'5px'}>
+                            <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '17px'}}>ENTREGUES HOJE</Typography>
+                            <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '17px'}}>10</Typography>
+                        </Box>
+                    </StatusContainer>
+                    <StatusContainer>
+                        <WatchLaterIcon sx={{fontSize: '40px', color: '#613f7f'}}/>
+                        <Box marginLeft={'5px'}>
+                            <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '17px'}}>PENDENTES</Typography>
+                            <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '17px'}}>10</Typography>
+                        </Box>
+                    </StatusContainer>
+                    <StatusContainer>
+                        <LocalShippingIcon sx={{fontSize: '40px', color: '#ff6200'}}/>
+                        <Box marginLeft={'5px'}>
+                            <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '17px'}}>RETIRADOS HOJE</Typography>
+                            <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '17px'}}>10</Typography>
+                        </Box>
+                    </StatusContainer>
+                    <StatusContainer>
+                        <ErrorIcon sx={{fontSize: '40px', color: '#e21a47'}}/>
+                        <Box marginLeft={'5px'}>
+                            <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '17px'}}>PROBLEMAS</Typography>
+                            <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '17px'}}>10</Typography>
+                        </Box>
+                    </StatusContainer>
+                </StatusOrdersPageContainer>
+                <OrdersPageToolBarContainer>
+                    <TextField sx={{backgroundColor: '#FFF'}} size='small' placeholder='Pesquisar encomenda'/>
+                    <Stack spacing={2} direction="row">
+                        <div>
+                            <Button variant="contained" sx={{backgroundColor: '#4d148c', fontWeight: 'bold'}}>FILTRAR</Button>
+                            <Menu
+                                open={false}
+                            >
+                                <MenuItem>Profile</MenuItem>
+                                <MenuItem>My account</MenuItem>
+                                <MenuItem>Logout</MenuItem>
+                            </Menu>
+                        </div>
+                        <Button variant="contained" sx={{backgroundColor: '#4d148c', fontWeight: 'bold'}}>ADICIONAR</Button>
+                    </Stack>
+                </OrdersPageToolBarContainer>
+                <TableContainer component={Paper}>
+                    <Table>
+                        <TableHead sx={{backgroundColor: '#4d148c'}}>
+                            <TableRow>
+                                <TableCell align="center" sx={{fontWeight: 'bold', color: '#FFF', fontSize: '14px'}}>DESTINATÁRIO</TableCell>
+                                <TableCell align="center" sx={{fontWeight: 'bold', color: '#FFF', fontSize: '14px'}}>ENTREGADOR</TableCell>
+                                <TableCell align="center" sx={{fontWeight: 'bold', color: '#FFF', fontSize: '14px'}}>CIDADE</TableCell>
+                                <TableCell align="center" sx={{fontWeight: 'bold', color: '#FFF', fontSize: '14px'}}>ESTADO</TableCell>
+                                <TableCell align="center" sx={{fontWeight: 'bold', color: '#FFF', fontSize: '14px'}}>STATUS</TableCell>
+                                <TableCell align="center" sx={{fontWeight: 'bold', color: '#FFF', fontSize: '14px'}}>AÇÕES</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            <TableRow>
+                                <TableCell align="center">asdfasdf</TableCell>
+                                <TableCell align="center">asdfasdf</TableCell>
+                                <TableCell align="center">asdfasdfasdf</TableCell>
+                                <TableCell align="center">asdfasdf</TableCell>
+                                <TableCell align="center">asdfasdfasdf</TableCell>
+                                <TableCell align="center">
+                                    <IconButton sx={{ padding: 0, margin: 0 }}>
+                                        <MoreVertIcon/>
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell align="center">asdfasdf</TableCell>
+                                <TableCell align="center">asdfasdf</TableCell>
+                                <TableCell align="center">asdfasdfasdf</TableCell>
+                                <TableCell align="center">asdfasdf</TableCell>
+                                <TableCell align="center">asdfasdfasdf</TableCell>
+                                <TableCell align="center">
+                                    <IconButton sx={{ padding: 0, margin: 0 }}>
+                                        <MoreVertIcon/>
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell align="center">asdfasdf</TableCell>
+                                <TableCell align="center">asdfasdf</TableCell>
+                                <TableCell align="center">asdfasdfasdf</TableCell>
+                                <TableCell align="center">asdfasdf</TableCell>
+                                <TableCell align="center">asdfasdfasdf</TableCell>
+                                <TableCell align="center">
+                                    <IconButton sx={{ padding: 0, margin: 0 }}>
+                                        <MoreVertIcon/>
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell align="center">asdfasdf</TableCell>
+                                <TableCell align="center">asdfasdf</TableCell>
+                                <TableCell align="center">asdfasdfasdf</TableCell>
+                                <TableCell align="center">asdfasdf</TableCell>
+                                <TableCell align="center">asdfasdfasdf</TableCell>
+                                <TableCell align="center">
+                                    <IconButton sx={{ padding: 0, margin: 0 }}>
+                                        <MoreVertIcon/>
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell align="center">asdfasdf</TableCell>
+                                <TableCell align="center">asdfasdf</TableCell>
+                                <TableCell align="center">asdfasdfasdf</TableCell>
+                                <TableCell align="center">asdfasdf</TableCell>
+                                <TableCell align="center">asdfasdfasdf</TableCell>
+                                <TableCell align="center">
+                                    <IconButton sx={{ padding: 0, margin: 0 }}>
+                                        <MoreVertIcon/>
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                    <TablePagination
+                        count={10}
+                        onPageChange={() => {}}
+                        page={1}
+                        rowsPerPage={-1}
+                        rowsPerPageOptions={[]}
+                    />
+                </TableContainer>
+            </OrdersPageContainer>
+        </GlobalLayout>
     );
 }
