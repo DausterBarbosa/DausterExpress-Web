@@ -1,9 +1,9 @@
 import React from 'react';
 
-import ProblemsPage from './pages/ProblemsPage';
+import Routes from './routes';
 
 function App() {
-  return <ProblemsPage/>;
+  return <Routes/>;
 }
 
 export default App;
