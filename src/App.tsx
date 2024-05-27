@@ -1,9 +1,9 @@
 import React from 'react';
 
-import OrdersPage from './pages/OrdersPage';
+import RecipientsPage from './pages/RecipientsPage';
 
 function App() {
-  return <OrdersPage/>;
+  return <RecipientsPage/>;
 }
 
 export default App;
