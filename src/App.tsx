@@ -1,9 +1,9 @@
 import React from 'react';
 
-import RecipientsPage from './pages/RecipientsPage';
+import ProblemsPage from './pages/ProblemsPage';
 
 function App() {
-  return <RecipientsPage/>;
+  return <ProblemsPage/>;
 }
 
 export default App;

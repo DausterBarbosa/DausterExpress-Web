@@ -1,5 +1,4 @@
 import GlobalLayout from '../../components/GlobalLayout';
-import RecipiensPageModal from '../../components/RecipientsPageModal';
 
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
@@ -19,26 +18,18 @@ import IconButton from '@mui/material/IconButton';
 
 import { styled } from '@mui/system';
 
-const DeliverymanPageContainer = styled('div')({
+const ProblemsPageContainer = styled('div')({
     width: '90vw',
     display: 'flex',
     flexDirection: 'column',
     marginTop: '90px',
 });
 
-
-export default function RecipientsPage(){
+export default function ProblemsPage(){
     return (
         <GlobalLayout>
-            {/* <RecipiensPageModal/> */}
-            <DeliverymanPageContainer>
-                <Stack direction="column">
-                    <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '20px'}}>GERENCIAR DESTINATÁRIOS</Typography>
-                    <Stack direction="row" justifyContent='space-between' margin='30px 0'>
-                        <TextField sx={{backgroundColor: '#FFF'}} size='small' placeholder='Pesquisar destinatários'/>
-                        <Button variant="contained" sx={{backgroundColor: '#4d148c', fontWeight: 'bold'}}>CADASTRAR</Button>
-                    </Stack>
-                </Stack>
+            <ProblemsPageContainer>
+                <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '20px', marginBottom: '30px'}}>GERENCIAR PROBLEMAS</Typography>
                 <TableContainer component={Paper}>
                     <Table>
                         <TableHead sx={{backgroundColor: '#4d148c'}}>
@@ -122,7 +113,7 @@ export default function RecipientsPage(){
                         rowsPerPageOptions={[]}
                     />
                 </TableContainer>
-            </DeliverymanPageContainer>
+            </ProblemsPageContainer>
         </GlobalLayout>
     );
 }
