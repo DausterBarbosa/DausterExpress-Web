@@ -1,3 +1,5 @@
+import {useState, useEffect} from "react";
+
 import GlobalLayout from '../../components/GlobalLayout';
 import OrdersPageModal from '../../components/OrdersPageModal';
 
@@ -23,8 +25,11 @@ import TableContainer from '@mui/material/TableContainer';
 import Paper from '@mui/material/Paper';
 import TablePagination from '@mui/material/TablePagination';
 import IconButton from '@mui/material/IconButton';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import { styled } from '@mui/system';
+
+import {useGetOrders} from "../../controllers/orderController";
 
 const OrdersPageContainer = styled('div')({
     width: '90vw',
@@ -62,9 +67,27 @@ const OrdersPageToolBarContainer = styled('div')({
 });
 
 export default function OrdersPage(){
+    const [orderPageModalCreate, setOrderPageModalCreate] = useState(false);
+
+    const [totalRows, setTotalRows] = useState(0);
+    const [page, setPage] = useState(0);
+
+    const {isLoading, data, isSuccess, refetch} = useGetOrders(page + 1);
+
+    useEffect(() => {
+        if (isSuccess && data.total !== undefined) {
+          setTotalRows(data.total);
+        }
+      }, [isSuccess, data]);
+
+    function handleOnPageChange(event:unknown, newPage:number){
+        setPage(newPage);
+        refetch();
+    }
+
     return (
         <GlobalLayout>
-            {/* <OrdersPageModal/> */}
+            <OrdersPageModal open={orderPageModalCreate} setOpen={setOrderPageModalCreate}/>
             <OrdersPageContainer>
                 <StatusOrdersPageContainer>
                     <StatusContainer>
@@ -109,7 +132,7 @@ export default function OrdersPage(){
                                 <MenuItem>Logout</MenuItem>
                             </Menu>
                         </div>
-                        <Button variant="contained" sx={{backgroundColor: '#4d148c', fontWeight: 'bold'}}>ADICIONAR</Button>
+                        <Button variant="contained" sx={{backgroundColor: '#4d148c', fontWeight: 'bold'}} onClick={() => setOrderPageModalCreate(true)}>ADICIONAR</Button>
                     </Stack>
                 </OrdersPageToolBarContainer>
                 <TableContainer component={Paper}>
@@ -125,75 +148,47 @@ export default function OrdersPage(){
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            <TableRow>
-                                <TableCell align="center">asdfasdf</TableCell>
-                                <TableCell align="center">asdfasdf</TableCell>
-                                <TableCell align="center">asdfasdfasdf</TableCell>
-                                <TableCell align="center">asdfasdf</TableCell>
-                                <TableCell align="center">asdfasdfasdf</TableCell>
-                                <TableCell align="center">
-                                    <IconButton sx={{ padding: 0, margin: 0 }}>
-                                        <MoreVertIcon/>
-                                    </IconButton>
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell align="center">asdfasdf</TableCell>
-                                <TableCell align="center">asdfasdf</TableCell>
-                                <TableCell align="center">asdfasdfasdf</TableCell>
-                                <TableCell align="center">asdfasdf</TableCell>
-                                <TableCell align="center">asdfasdfasdf</TableCell>
-                                <TableCell align="center">
-                                    <IconButton sx={{ padding: 0, margin: 0 }}>
-                                        <MoreVertIcon/>
-                                    </IconButton>
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell align="center">asdfasdf</TableCell>
-                                <TableCell align="center">asdfasdf</TableCell>
-                                <TableCell align="center">asdfasdfasdf</TableCell>
-                                <TableCell align="center">asdfasdf</TableCell>
-                                <TableCell align="center">asdfasdfasdf</TableCell>
-                                <TableCell align="center">
-                                    <IconButton sx={{ padding: 0, margin: 0 }}>
-                                        <MoreVertIcon/>
-                                    </IconButton>
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell align="center">asdfasdf</TableCell>
-                                <TableCell align="center">asdfasdf</TableCell>
-                                <TableCell align="center">asdfasdfasdf</TableCell>
-                                <TableCell align="center">asdfasdf</TableCell>
-                                <TableCell align="center">asdfasdfasdf</TableCell>
-                                <TableCell align="center">
-                                    <IconButton sx={{ padding: 0, margin: 0 }}>
-                                        <MoreVertIcon/>
-                                    </IconButton>
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell align="center">asdfasdf</TableCell>
-                                <TableCell align="center">asdfasdf</TableCell>
-                                <TableCell align="center">asdfasdfasdf</TableCell>
-                                <TableCell align="center">asdfasdf</TableCell>
-                                <TableCell align="center">asdfasdfasdf</TableCell>
-                                <TableCell align="center">
-                                    <IconButton sx={{ padding: 0, margin: 0 }}>
-                                        <MoreVertIcon/>
-                                    </IconButton>
-                                </TableCell>
-                            </TableRow>
+                            {isSuccess && (
+                                data.data.map((item:any) => (
+                                    <TableRow>
+                                        <TableCell align="center">{item.destinatario.nome}</TableCell>
+                                        <TableCell align="center">{item.entregador.nome + " " + item.entregador.sobrenome}</TableCell>
+                                        <TableCell align="center">{item.destinatario.cidade}</TableCell>
+                                        <TableCell align="center">{item.destinatario.estado}</TableCell>
+                                        <TableCell align="center">{item.status}</TableCell>
+                                        <TableCell align="center">
+                                            <IconButton sx={{ padding: 0, margin: 0 }}>
+                                                <MoreVertIcon/>
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow> 
+                                ))
+                            )}  
                         </TableBody>
                     </Table>
-                    <TablePagination
-                        count={10}
-                        onPageChange={() => {}}
-                        page={1}
-                        rowsPerPage={-1}
-                        rowsPerPageOptions={[]}
-                    />
+                    <div style={{position:"relative"}}>
+                        <TablePagination
+                            count={totalRows}
+                            onPageChange={handleOnPageChange}
+                            page={page}
+                            rowsPerPage={5}
+                            rowsPerPageOptions={[]}
+                            sx={{
+                                margin: 0,
+                                padding: 0
+                            }}
+                        />
+                        {isLoading && (
+                            <CircularProgress style={{
+                                position: 'absolute',
+                                top: '10px',
+                                left: '190px',
+                                transform: 'translate(-50%, -50%)',
+                                color:'#4d148c'}}
+                                size={30}
+                            />
+                        )}
+                    </div>
                 </TableContainer>
             </OrdersPageContainer>
         </GlobalLayout>

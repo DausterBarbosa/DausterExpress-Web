@@ -30,7 +30,7 @@ const DeliverymanPageContainer = styled('div')({
 export default function RecipientsPage(){
     return (
         <GlobalLayout>
-            {/* <RecipiensPageModal/> */}
+            <RecipiensPageModal/>
             <DeliverymanPageContainer>
                 <Stack direction="column">
                     <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '20px'}}>GERENCIAR DESTINATÁRIOS</Typography>
