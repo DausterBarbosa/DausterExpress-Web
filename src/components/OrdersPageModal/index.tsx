@@ -1,6 +1,6 @@
 import {useState} from "react";
 
-import { useQueryClient } from '@tanstack/react-query'
+import { useQueryClient } from '@tanstack/react-query';
 
 import CancelIcon from '@mui/icons-material/Cancel';
 
@@ -58,7 +58,6 @@ const OrdersPageModal:React.FC<OrdersPageModalProps> = ({open, setOpen}) => {
     const {data:dataRecipients, isLoading:isLoadingRecipients, refetch:refetchRecipients} = useGetRecipients(false);
     const {data:dataDeliverymans, isLoading:isLoadingDeliverymans, refetch:refetchDeliverymans} = useGetDeliverymans(false);
     const {mutateAsync, isPending} = useCreateOrders();
-    const {refetch:getOrdersRefetch} = useGetOrders(1);
 
     async function handleCreateOrder(){
         if(deliveryman === "" || recipient === "" || order.trim() === ""){

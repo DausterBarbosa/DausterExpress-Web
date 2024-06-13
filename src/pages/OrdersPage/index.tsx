@@ -1,5 +1,7 @@
 import {useState, useEffect} from "react";
 
+import { useQueryClient } from '@tanstack/react-query'
+
 import GlobalLayout from '../../components/GlobalLayout';
 import OrdersPageModal from '../../components/OrdersPageModal';
 
@@ -26,6 +28,7 @@ import Paper from '@mui/material/Paper';
 import TablePagination from '@mui/material/TablePagination';
 import IconButton from '@mui/material/IconButton';
 import CircularProgress from '@mui/material/CircularProgress';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 import { styled } from '@mui/system';
 
@@ -67,23 +70,57 @@ const OrdersPageToolBarContainer = styled('div')({
 });
 
 export default function OrdersPage(){
+    const queryClient = useQueryClient();
+
+    const [orderStatus, setOrderStatus] = useState("todos");
+
     const [orderPageModalCreate, setOrderPageModalCreate] = useState(false);
 
-    const [totalRows, setTotalRows] = useState(0);
     const [page, setPage] = useState(0);
 
-    const {isLoading, data, isSuccess, refetch} = useGetOrders(page + 1);
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
 
-    useEffect(() => {
-        if (isSuccess && data.total !== undefined) {
-          setTotalRows(data.total);
+    const {isLoading, data, isSuccess} = useGetOrders(page + 1, orderStatus);
+
+    function handleClick(event: React.MouseEvent<HTMLButtonElement>){
+        setAnchorEl(event.currentTarget);
+    }
+
+    function handleClose(){
+        setAnchorEl(null);
+    }
+
+    function handleStatus(status:string){
+        setAnchorEl(null);
+
+        if(status !== orderStatus){
+            queryClient.removeQueries({queryKey:["getOrders"]});
+            setPage(0);
+            setOrderStatus(status);
         }
-      }, [isSuccess, data]);
+    }
 
     function handleOnPageChange(event:unknown, newPage:number){
         setPage(newPage);
-        refetch();
     }
+
+    function getColorByType(type:string){
+        switch (type) {
+            case 'pendente':
+                return '#613f7f';
+            case 'retirado':
+                return '#ff6200';
+            case 'entregue':
+                return '#3e973f';
+            case 'problema':
+                return '#e21a47';
+            case 'cancelado':
+                return 'red'
+            default:
+                return 'black';
+        }
+      };
 
     return (
         <GlobalLayout>
@@ -120,16 +157,44 @@ export default function OrdersPage(){
                     </StatusContainer>
                 </StatusOrdersPageContainer>
                 <OrdersPageToolBarContainer>
-                    <TextField sx={{backgroundColor: '#FFF'}} size='small' placeholder='Pesquisar encomenda'/>
+                    <Stack spacing={1} direction="row">
+                        <TextField sx={{backgroundColor: '#FFF'}} size='small' placeholder='Pesquisar encomenda'/>
+                        <Button variant="contained" sx={{backgroundColor: '#4d148c', fontWeight: 'bold'}}>PESQUISAR</Button>
+                    </Stack>
                     <Stack spacing={2} direction="row">
                         <div>
-                            <Button variant="contained" sx={{backgroundColor: '#4d148c', fontWeight: 'bold'}}>FILTRAR</Button>
-                            <Menu
-                                open={false}
+                            <Button
+                                id="teste"
+                                variant="contained" 
+                                endIcon={<KeyboardArrowDownIcon />}
+                                sx={{backgroundColor: '#4d148c', fontWeight: 'bold'}}
+                                aria-controls={open ? 'basic-menu' : undefined}
+                                aria-haspopup="true"
+                                aria-expanded={open ? 'true' : undefined}
+                                onClick={handleClick}
                             >
-                                <MenuItem>Profile</MenuItem>
-                                <MenuItem>My account</MenuItem>
-                                <MenuItem>Logout</MenuItem>
+                                {orderStatus === "todos" && "TODOS"}
+                                {orderStatus === "pendente" && "PENDENTES"}
+                                {orderStatus === "retirado" && "RETIRADOS"}
+                                {orderStatus === "entregue" && "ENTREGUES"}
+                                {orderStatus === "problema" && "PROBLEMAS"}
+                                {orderStatus === "cancelado" && "CANCELADOS"}
+                            </Button>
+                            <Menu
+                                id="teste"
+                                anchorEl={anchorEl}
+                                open={open}
+                                onClose={handleClose}
+                                MenuListProps={{
+                                    'aria-labelledby': 'basic-button',
+                                }}
+                            >
+                                <MenuItem onClick={() => handleStatus("todos")}>Todos</MenuItem>
+                                <MenuItem onClick={() => handleStatus("pendente")}>Pendentes</MenuItem>
+                                <MenuItem onClick={() => handleStatus("retirado")}>Retirados</MenuItem>
+                                <MenuItem onClick={() => handleStatus("entregue")}>Entregues</MenuItem>
+                                <MenuItem onClick={() => handleStatus("problema")}>Problemas</MenuItem>
+                                <MenuItem onClick={() => handleStatus("cancelado")}>Cancelados</MenuItem>
                             </Menu>
                         </div>
                         <Button variant="contained" sx={{backgroundColor: '#4d148c', fontWeight: 'bold'}} onClick={() => setOrderPageModalCreate(true)}>ADICIONAR</Button>
@@ -150,12 +215,12 @@ export default function OrdersPage(){
                         <TableBody>
                             {isSuccess && (
                                 data.data.map((item:any) => (
-                                    <TableRow>
-                                        <TableCell align="center">{item.destinatario.nome}</TableCell>
-                                        <TableCell align="center">{item.entregador.nome + " " + item.entregador.sobrenome}</TableCell>
-                                        <TableCell align="center">{item.destinatario.cidade}</TableCell>
-                                        <TableCell align="center">{item.destinatario.estado}</TableCell>
-                                        <TableCell align="center">{item.status}</TableCell>
+                                    <TableRow key={item.id}>
+                                        <TableCell align="center" sx={{fontSize: '15px'}}>{item.destinatario.nome}</TableCell>
+                                        <TableCell align="center" sx={{fontSize: '15px'}}>{item.entregador.nome + " " + item.entregador.sobrenome}</TableCell>
+                                        <TableCell align="center" sx={{fontSize: '15px'}}>{item.destinatario.cidade}</TableCell>
+                                        <TableCell align="center" sx={{fontSize: '15px'}}>{item.destinatario.estado}</TableCell>
+                                        <TableCell align="center" sx={{fontSize: '14px', fontWeight: "bold", color: getColorByType(item.status)}}>{item.status.toUpperCase()}</TableCell>
                                         <TableCell align="center">
                                             <IconButton sx={{ padding: 0, margin: 0 }}>
                                                 <MoreVertIcon/>
@@ -168,7 +233,7 @@ export default function OrdersPage(){
                     </Table>
                     <div style={{position:"relative"}}>
                         <TablePagination
-                            count={totalRows}
+                            count={data ? data.total : 0}
                             onPageChange={handleOnPageChange}
                             page={page}
                             rowsPerPage={5}
