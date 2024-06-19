@@ -1,9 +1,8 @@
-import {useState, useEffect} from "react";
-
-import { useQueryClient } from '@tanstack/react-query'
+import {useState} from "react";
 
 import GlobalLayout from '../../components/GlobalLayout';
 import OrdersPageModal from '../../components/OrdersPageModal';
+import OrderInformationModal from '../../components/OrderInformationModal';
 
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import WatchLaterIcon from '@mui/icons-material/WatchLater';
@@ -29,6 +28,8 @@ import TablePagination from '@mui/material/TablePagination';
 import IconButton from '@mui/material/IconButton';
 import CircularProgress from '@mui/material/CircularProgress';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 import { styled } from '@mui/system';
 
@@ -70,39 +71,96 @@ const OrdersPageToolBarContainer = styled('div')({
 });
 
 export default function OrdersPage(){
-    const queryClient = useQueryClient();
+    const [rowId, setRowId] = useState<null | string>(null);
 
-    const [orderStatus, setOrderStatus] = useState("todos");
+    const [orderSearchAlert, setOrderSearchAlert] = useState(false);
 
     const [orderPageModalCreate, setOrderPageModalCreate] = useState(false);
 
-    const [page, setPage] = useState(0);
+    const [informationModal, setInformationModal] = useState(false);
 
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
+    const [orderData, setOrderData] = useState();
 
-    const {isLoading, data, isSuccess} = useGetOrders(page + 1, orderStatus);
+    const [searchOrder, setSearchOrder] = useState("");
 
-    function handleClick(event: React.MouseEvent<HTMLButtonElement>){
-        setAnchorEl(event.currentTarget);
+    const [queryParams, setQueryParams] = useState({
+        page: 0,
+        status: "todos",
+        encomenda: "",
+    });
+
+    const [anchorElStatus, setAnchorElStatus] = useState<null | HTMLElement>(null);
+    const openStatus = Boolean(anchorElStatus);
+
+    const [anchorElOptions, setAnchorElOptions] = useState<null | HTMLElement>(null);
+    const openOptions = Boolean(anchorElOptions);
+
+    const {isLoading, data, isSuccess} = useGetOrders(queryParams);
+
+    function handleClickStatus(event: React.MouseEvent<HTMLButtonElement>){
+        setAnchorElStatus(event.currentTarget);
     }
 
-    function handleClose(){
-        setAnchorEl(null);
+    function handleCloseStatus(){
+        setAnchorElStatus(null);
+    }
+
+    function handleClickOptions(event: React.MouseEvent<HTMLButtonElement>, id:string){
+        setRowId(id);
+        setAnchorElOptions(event.currentTarget);
+    }
+
+    function handleCloseOptions(){
+        setAnchorElOptions(null);
     }
 
     function handleStatus(status:string){
-        setAnchorEl(null);
+        setAnchorElStatus(null);
+        if(status !== queryParams.status){
+            setQueryParams({
+                page: 0,
+                status,
+                encomenda: ""
+            });
+        }
+    }
 
-        if(status !== orderStatus){
-            queryClient.removeQueries({queryKey:["getOrders"]});
-            setPage(0);
-            setOrderStatus(status);
+    function handleOrderSearchField(search:any){
+        setSearchOrder(search);
+
+        if(search === ""){
+            setQueryParams({
+                status: "todos",
+                page: 0,
+                encomenda: "",
+            });
         }
     }
 
     function handleOnPageChange(event:unknown, newPage:number){
-        setPage(newPage);
+        setQueryParams({
+            ...queryParams,
+            page: newPage,
+        });
+    }
+
+    function handleInformationModal(order:any){
+        setAnchorElOptions(null);
+        setOrderData(order);
+        setInformationModal(true);
+    }
+
+    function handleOrderSearch(){
+        if(searchOrder.trim() === ""){
+            setOrderSearchAlert(true);
+        }
+        else {
+            setQueryParams({
+                status: "todos",
+                page: 0,
+                encomenda: searchOrder,
+            });
+        }
     }
 
     function getColorByType(type:string){
@@ -120,11 +178,12 @@ export default function OrdersPage(){
             default:
                 return 'black';
         }
-      };
+      }
 
     return (
         <GlobalLayout>
             <OrdersPageModal open={orderPageModalCreate} setOpen={setOrderPageModalCreate}/>
+            <OrderInformationModal open={informationModal} setOpen={setInformationModal} data={orderData}/>
             <OrdersPageContainer>
                 <StatusOrdersPageContainer>
                     <StatusContainer>
@@ -158,8 +217,8 @@ export default function OrdersPage(){
                 </StatusOrdersPageContainer>
                 <OrdersPageToolBarContainer>
                     <Stack spacing={1} direction="row">
-                        <TextField sx={{backgroundColor: '#FFF'}} size='small' placeholder='Pesquisar encomenda'/>
-                        <Button variant="contained" sx={{backgroundColor: '#4d148c', fontWeight: 'bold'}}>PESQUISAR</Button>
+                        <TextField sx={{backgroundColor: '#FFF'}} size='small' placeholder='Pesquisar encomenda' onChange={(e) => handleOrderSearchField(e.target.value)} value={searchOrder}/>
+                        <Button variant="contained" sx={{backgroundColor: '#4d148c', fontWeight: 'bold'}} onClick={handleOrderSearch}>PESQUISAR</Button>
                     </Stack>
                     <Stack spacing={2} direction="row">
                         <div>
@@ -168,23 +227,23 @@ export default function OrdersPage(){
                                 variant="contained" 
                                 endIcon={<KeyboardArrowDownIcon />}
                                 sx={{backgroundColor: '#4d148c', fontWeight: 'bold'}}
-                                aria-controls={open ? 'basic-menu' : undefined}
+                                aria-controls={openStatus ? 'basic-menu' : undefined}
                                 aria-haspopup="true"
-                                aria-expanded={open ? 'true' : undefined}
-                                onClick={handleClick}
+                                aria-expanded={openStatus ? 'true' : undefined}
+                                onClick={handleClickStatus}
                             >
-                                {orderStatus === "todos" && "TODOS"}
-                                {orderStatus === "pendente" && "PENDENTES"}
-                                {orderStatus === "retirado" && "RETIRADOS"}
-                                {orderStatus === "entregue" && "ENTREGUES"}
-                                {orderStatus === "problema" && "PROBLEMAS"}
-                                {orderStatus === "cancelado" && "CANCELADOS"}
+                                {queryParams.status === "todos" && "TODOS"}
+                                {queryParams.status === "pendente" && "PENDENTES"}
+                                {queryParams.status === "retirado" && "RETIRADOS"}
+                                {queryParams.status === "entregue" && "ENTREGUES"}
+                                {queryParams.status === "problema" && "PROBLEMAS"}
+                                {queryParams.status === "cancelado" && "CANCELADOS"}
                             </Button>
                             <Menu
                                 id="teste"
-                                anchorEl={anchorEl}
-                                open={open}
-                                onClose={handleClose}
+                                anchorEl={anchorElStatus}
+                                open={openStatus}
+                                onClose={handleCloseStatus}
                                 MenuListProps={{
                                     'aria-labelledby': 'basic-button',
                                 }}
@@ -212,7 +271,7 @@ export default function OrdersPage(){
                                 <TableCell align="center" sx={{fontWeight: 'bold', color: '#FFF', fontSize: '14px'}}>AÇÕES</TableCell>
                             </TableRow>
                         </TableHead>
-                        <TableBody>
+                        <TableBody sx={{position:"relative"}}>
                             {isSuccess && (
                                 data.data.map((item:any) => (
                                     <TableRow key={item.id}>
@@ -222,9 +281,39 @@ export default function OrdersPage(){
                                         <TableCell align="center" sx={{fontSize: '15px'}}>{item.destinatario.estado}</TableCell>
                                         <TableCell align="center" sx={{fontSize: '14px', fontWeight: "bold", color: getColorByType(item.status)}}>{item.status.toUpperCase()}</TableCell>
                                         <TableCell align="center">
-                                            <IconButton sx={{ padding: 0, margin: 0 }}>
-                                                <MoreVertIcon/>
-                                            </IconButton>
+                                            <div>
+                                                <IconButton
+                                                    id="teste1"
+                                                    onClick={(e) => handleClickOptions(e, item.id)}
+                                                    sx={{ padding: 0, margin: 0 }}
+                                                    aria-controls={openOptions ? 'basic-menu' : undefined}
+                                                    aria-haspopup="true"
+                                                    aria-expanded={openOptions ? 'true' : undefined}
+                                                >
+                                                    <MoreVertIcon/>
+                                                </IconButton>
+                                                <Menu
+                                                    id="teste1"
+                                                    anchorEl={anchorElOptions}
+                                                    open={openOptions && rowId === item.id}
+                                                    onClose={handleCloseOptions}
+                                                    MenuListProps={{
+                                                        'aria-labelledby': 'basic-button',
+                                                    }}
+                                                    anchorOrigin={{
+                                                        vertical: 'bottom',
+                                                        horizontal: 'right',
+                                                    }}
+                                                    transformOrigin={{
+                                                        vertical: 'top',
+                                                        horizontal: 'right',
+                                                    }}
+                                                >
+                                                    <MenuItem onClick={() => handleInformationModal(item)}>Visualizar</MenuItem>
+                                                    <MenuItem onClick={() => {alert("sdf")}}>Retirado</MenuItem>
+                                                    <MenuItem onClick={() => {}}>Excluir</MenuItem>
+                                                </Menu>
+                                            </div>
                                         </TableCell>
                                     </TableRow> 
                                 ))
@@ -234,8 +323,8 @@ export default function OrdersPage(){
                     <div style={{position:"relative"}}>
                         <TablePagination
                             count={data ? data.total : 0}
-                            onPageChange={handleOnPageChange}
-                            page={page}
+                            onPageChange={handleOnPageChange} 
+                            page={queryParams.page}
                             rowsPerPage={5}
                             rowsPerPageOptions={[]}
                             sx={{
@@ -256,6 +345,16 @@ export default function OrdersPage(){
                     </div>
                 </TableContainer>
             </OrdersPageContainer>
+            <Snackbar open={orderSearchAlert} autoHideDuration={6000} anchorOrigin={{vertical: "top", horizontal: "right"}} onClose={() => setOrderSearchAlert(false)}>
+                    <Alert
+                    onClose={() => setOrderSearchAlert(false)}
+                    severity="warning"
+                    variant="filled"
+                    sx={{ width: '100%' }}
+                    >
+                    Campo de Busca vazio!
+                    </Alert>
+                </Snackbar>
         </GlobalLayout>
     );
 }
