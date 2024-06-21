@@ -45,3 +45,21 @@ export function useCreateOrders(){
         }
     });
 }
+
+interface ChangeStatusOrderProp{
+    id: string;
+    status: string;
+}
+
+export function useChangeStatusOrder(){
+    return useMutation({
+        mutationKey: ["changeStatusOrder"],
+        mutationFn: async(status:ChangeStatusOrderProp) => {
+            const data = await api.put(`/order/${status.id}/status`, {
+                status: status.status,
+            });
+
+            return data;
+        }
+    });
+}

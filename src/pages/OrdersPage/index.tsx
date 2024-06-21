@@ -3,6 +3,7 @@ import {useState} from "react";
 import GlobalLayout from '../../components/GlobalLayout';
 import OrdersPageModal from '../../components/OrdersPageModal';
 import OrderInformationModal from '../../components/OrderInformationModal';
+import DialogModal from '../../components/DialogModal';
 
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import WatchLaterIcon from '@mui/icons-material/WatchLater';
@@ -29,11 +30,13 @@ import IconButton from '@mui/material/IconButton';
 import CircularProgress from '@mui/material/CircularProgress';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
+import Alert, {AlertColor} from '@mui/material/Alert';
+
+import { useQueryClient } from '@tanstack/react-query';
 
 import { styled } from '@mui/system';
 
-import {useGetOrders} from "../../controllers/orderController";
+import {useGetOrders, useChangeStatusOrder} from "../../controllers/orderController";
 
 const OrdersPageContainer = styled('div')({
     width: '90vw',
@@ -70,24 +73,49 @@ const OrdersPageToolBarContainer = styled('div')({
     margin: '30px 0'
 });
 
-export default function OrdersPage(){
-    const [rowId, setRowId] = useState<null | string>(null);
+interface OrderProps{
+    id: string;
+    encomenda: string;
+    imagem_url: string | null;
+    data_retirada: string | null;
+    data_entrega: string | null;
+    status: string;
+    destinatario: {
+        nome: string;
+        telefone: string;
+        email: string;
+    };
+    entregador: {
+        nome: string;
+        sobrenome: string;
+        telefone: string;
+        email: string;
+    };
+}
 
-    const [orderSearchAlert, setOrderSearchAlert] = useState(false);
+export default function OrdersPage(){
+    const queryClient = useQueryClient();
+
+    const [rowId, setRowId] = useState<null | string>(null);
 
     const [orderPageModalCreate, setOrderPageModalCreate] = useState(false);
 
     const [informationModal, setInformationModal] = useState(false);
 
-    const [orderData, setOrderData] = useState();
+    const [orderData, setOrderData] = useState<OrderProps>();
 
     const [searchOrder, setSearchOrder] = useState("");
+
+    const [dialogModal, setDialogModal] = useState(false);
 
     const [queryParams, setQueryParams] = useState({
         page: 0,
         status: "todos",
         encomenda: "",
     });
+
+    const [alertType, setAlertType] = useState<AlertColor>("success");
+    const [alert, setAlert] = useState(false);
 
     const [anchorElStatus, setAnchorElStatus] = useState<null | HTMLElement>(null);
     const openStatus = Boolean(anchorElStatus);
@@ -96,6 +124,8 @@ export default function OrdersPage(){
     const openOptions = Boolean(anchorElOptions);
 
     const {isLoading, data, isSuccess} = useGetOrders(queryParams);
+
+    const {isPending, mutateAsync} = useChangeStatusOrder();
 
     function handleClickStatus(event: React.MouseEvent<HTMLButtonElement>){
         setAnchorElStatus(event.currentTarget);
@@ -150,9 +180,34 @@ export default function OrdersPage(){
         setInformationModal(true);
     }
 
+    function handleDialogModal(order:any){
+        setAnchorElOptions(null);
+        setOrderData(order);
+        setDialogModal(true);
+    }
+
+    async function handleChangeStatus(){
+        try {
+            const data = await mutateAsync({
+                id: orderData!.id,
+                status: "retirado"
+            });
+
+            setDialogModal(false);
+            setAlertType("success");
+            setAlert(true);
+            queryClient.invalidateQueries({queryKey: ['getOrders']});
+        } catch (error) {
+            setDialogModal(false);
+            setAlertType("error");
+            setAlert(true);
+        }
+    }
+
     function handleOrderSearch(){
         if(searchOrder.trim() === ""){
-            setOrderSearchAlert(true);
+            setAlertType("warning");
+            setAlert(true);
         }
         else {
             setQueryParams({
@@ -184,6 +239,7 @@ export default function OrdersPage(){
         <GlobalLayout>
             <OrdersPageModal open={orderPageModalCreate} setOpen={setOrderPageModalCreate}/>
             <OrderInformationModal open={informationModal} setOpen={setInformationModal} data={orderData}/>
+            <DialogModal handleRequest={handleChangeStatus} open={dialogModal} setOpen={setDialogModal} loading={isPending} title="Marcar item como retirado?" description="Tenha certeza de ter escolhido o item correto. Confirmar ação?"/>
             <OrdersPageContainer>
                 <StatusOrdersPageContainer>
                     <StatusContainer>
@@ -310,8 +366,7 @@ export default function OrdersPage(){
                                                     }}
                                                 >
                                                     <MenuItem onClick={() => handleInformationModal(item)}>Visualizar</MenuItem>
-                                                    <MenuItem onClick={() => {alert("sdf")}}>Retirado</MenuItem>
-                                                    <MenuItem onClick={() => {}}>Excluir</MenuItem>
+                                                    <MenuItem disabled={item.status !== "pendente"} onClick={() => handleDialogModal(item)}>Retirado</MenuItem>
                                                 </Menu>
                                             </div>
                                         </TableCell>
@@ -345,14 +400,16 @@ export default function OrdersPage(){
                     </div>
                 </TableContainer>
             </OrdersPageContainer>
-            <Snackbar open={orderSearchAlert} autoHideDuration={6000} anchorOrigin={{vertical: "top", horizontal: "right"}} onClose={() => setOrderSearchAlert(false)}>
+            <Snackbar open={alert} autoHideDuration={6000} anchorOrigin={{vertical: "top", horizontal: "right"}} onClose={() => setAlert(false)}>
                     <Alert
-                    onClose={() => setOrderSearchAlert(false)}
-                    severity="warning"
+                    onClose={() => setAlert(false)}
+                    severity={alertType}
                     variant="filled"
                     sx={{ width: '100%' }}
                     >
-                    Campo de Busca vazio!
+                    {alertType === 'success' && 'Operação realizada com sucesso!'}
+                    {alertType === 'error' && 'Ocorreu um erro ao realizar a operação!'}
+                    {alertType === 'warning' && 'Preencha o campo de busca!'}
                     </Alert>
                 </Snackbar>
         </GlobalLayout>
