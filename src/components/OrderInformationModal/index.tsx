@@ -39,13 +39,24 @@ interface InformationModalProps {
     data: OrderProps | undefined;
 }
 
+function formattedDate(dateString:string){
+    return new Date(dateString).toLocaleDateString("pt-BR", {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+    });
+}
+
 const OrderInformationModal:React.FC<InformationModalProps> = ({open, setOpen, data}) => {
     return (
         <Modal open={open} onClose={() => setOpen(false)} sx={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
             <OrdersPageModalContainer>
                 <Typography sx={{fontWeight:"bold"}}>ENCOMENDA</Typography>
                 <Typography><span style={{fontWeight:"bold", fontSize: "15px", color: "#61605f"}}>ITEM:</span> {data?.encomenda}</Typography>
-                <Typography><span style={{fontWeight:"bold", fontSize: "15px", color: "#61605f"}}>STATUS:</span> {data?.status}</Typography>
+                <Typography><span style={{fontWeight:"bold", fontSize: "15px", color: "#61605f"}}>STATUS:</span> {data?.status.toUpperCase()}</Typography>
                 <Divider sx={{margin: "10px 0"}}/>
                 <Typography sx={{fontWeight:"bold", marginTop: "10px"}}>DESTINATÁRIO</Typography>
                 <Typography><span style={{fontWeight:"bold", fontSize: "15px", color: "#61605f"}}>NOME:</span> {data?.destinatario.nome}</Typography>
@@ -58,8 +69,8 @@ const OrderInformationModal:React.FC<InformationModalProps> = ({open, setOpen, d
                 <Typography><span style={{fontWeight:"bold", fontSize: "15px", color: "#61605f"}}>EMAIL:</span> {data?.entregador.email}</Typography>
                 <Divider sx={{margin: "10px 0"}}/>
                 <Typography sx={{fontWeight:"bold", marginTop: "10px"}}>DATAS</Typography>
-                <Typography><span style={{fontWeight:"bold", fontSize: "15px", color: "#61605f"}}>RETIRADO:</span> {data?.data_retirada === null ? "Pendente" : ""}</Typography>
-                <Typography><span style={{fontWeight:"bold", fontSize: "15px", color: "#61605f"}}>ENTREGUE:</span> {data?.data_entrega === null ? "Pendente" : ""}</Typography>
+                <Typography><span style={{fontWeight:"bold", fontSize: "15px", color: "#61605f"}}>RETIRADO:</span> {!data?.data_retirada ? "PENDENTE" : formattedDate(data!.data_retirada)}</Typography>
+                <Typography><span style={{fontWeight:"bold", fontSize: "15px", color: "#61605f"}}>ENTREGUE:</span> {!data?.data_entrega ? "PENDENTE" : formattedDate(data!.data_entrega)}</Typography>
                 <Divider sx={{margin: "10px 0"}}/>
                 <Typography sx={{fontWeight:"bold", marginTop: "10px"}}>IMAGEM DA ENTREGA: Pendente</Typography>
                 <IconButton sx={{ padding: 0, margin: 0, color:'#4d148c', position: 'absolute', top: 5, right: 5}} onClick={() => setOpen(false)}>

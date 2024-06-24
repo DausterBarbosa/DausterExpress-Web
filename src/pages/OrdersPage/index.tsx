@@ -36,7 +36,7 @@ import { useQueryClient } from '@tanstack/react-query';
 
 import { styled } from '@mui/system';
 
-import {useGetOrders, useChangeStatusOrder} from "../../controllers/orderController";
+import {useGetOrders, useChangeStatusOrder, useGetStatus} from "../../controllers/orderController";
 
 const OrdersPageContainer = styled('div')({
     width: '90vw',
@@ -127,6 +127,8 @@ export default function OrdersPage(){
 
     const {isPending, mutateAsync} = useChangeStatusOrder();
 
+    const {data:statusData} = useGetStatus();
+
     function handleClickStatus(event: React.MouseEvent<HTMLButtonElement>){
         setAnchorElStatus(event.currentTarget);
     }
@@ -197,6 +199,7 @@ export default function OrdersPage(){
             setAlertType("success");
             setAlert(true);
             queryClient.invalidateQueries({queryKey: ['getOrders']});
+            queryClient.invalidateQueries({queryKey: ['getStatus']});
         } catch (error) {
             setDialogModal(false);
             setAlertType("error");
@@ -246,28 +249,28 @@ export default function OrdersPage(){
                         <CheckCircleIcon sx={{fontSize: '40px', color: '#3e973f'}}/>
                         <Box marginLeft={'5px'}>
                             <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '17px'}}>ENTREGUES HOJE</Typography>
-                            <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '17px'}}>10</Typography>
+                            <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '17px'}}>{!statusData ? 0 : statusData.data.entregues_hoje}</Typography>
                         </Box>
                     </StatusContainer>
                     <StatusContainer>
                         <WatchLaterIcon sx={{fontSize: '40px', color: '#613f7f'}}/>
                         <Box marginLeft={'5px'}>
                             <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '17px'}}>PENDENTES</Typography>
-                            <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '17px'}}>10</Typography>
+                            <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '17px'}}>{!statusData ? 0 : statusData.data.pendentes}</Typography>
                         </Box>
                     </StatusContainer>
                     <StatusContainer>
                         <LocalShippingIcon sx={{fontSize: '40px', color: '#ff6200'}}/>
                         <Box marginLeft={'5px'}>
                             <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '17px'}}>RETIRADOS HOJE</Typography>
-                            <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '17px'}}>10</Typography>
+                            <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '17px'}}>{!statusData ? 0 : statusData.data.retirados_hoje}</Typography>
                         </Box>
                     </StatusContainer>
                     <StatusContainer>
                         <ErrorIcon sx={{fontSize: '40px', color: '#e21a47'}}/>
                         <Box marginLeft={'5px'}>
                             <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '17px'}}>PROBLEMAS</Typography>
-                            <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '17px'}}>10</Typography>
+                            <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '17px'}}>{!statusData ? 0 : statusData.data.problemas}</Typography>
                         </Box>
                     </StatusContainer>
                 </StatusOrdersPageContainer>

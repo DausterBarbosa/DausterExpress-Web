@@ -75,6 +75,7 @@ const OrdersPageModal:React.FC<OrdersPageModalProps> = ({open, setOpen}) => {
                 setAlertType("success");
                 setAlert(true);
                 queryClient.invalidateQueries({queryKey: ['getOrders']});
+                queryClient.invalidateQueries({queryKey: ['getStatus']});
             } catch (error) {
                 setAlertType("error");
                 setAlert(true);

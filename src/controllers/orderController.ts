@@ -1,6 +1,17 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import api from "../services/axios";
 
+export function useGetStatus(){
+    return useQuery({
+        queryKey: ["getStatus"],
+        queryFn: async () => {
+            const status = await api.get("/order/status");
+
+            return status.data;
+        }
+    });
+}
+
 interface OrderQueryProps {
     page: number;
     status: string;
