@@ -1,3 +1,5 @@
+import {useState} from 'react';
+
 import GlobalLayout from '../../components/GlobalLayout';
 import DeliverymanPageModal from '../../components/DeliverymanPageModal';
 
@@ -26,17 +28,19 @@ const DeliverymanPageContainer = styled('div')({
     marginTop: '90px',
 });
 
-
 export default function DeliverymanPage(){
+
+    const [deliverymanModalRegister, setDeliverymanModalRegister] = useState(false);
+
     return (
         <GlobalLayout>
-            {/* <DeliverymanPageModal/> */}
+            <DeliverymanPageModal open={deliverymanModalRegister} setOpen={setDeliverymanModalRegister}/>
             <DeliverymanPageContainer>
                 <Stack direction="column">
                     <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '20px'}}>GERENCIAR ENTREGADORES</Typography>
                     <Stack direction="row" justifyContent='space-between' margin='30px 0'>
                         <TextField sx={{backgroundColor: '#FFF'}} size='small' placeholder='Pesquisar entregador'/>
-                        <Button variant="contained" sx={{backgroundColor: '#4d148c', fontWeight: 'bold'}}>CADASTRAR</Button>
+                        <Button variant="contained" sx={{backgroundColor: '#4d148c', fontWeight: 'bold'}} onClick={() => setDeliverymanModalRegister(true)}>CADASTRAR</Button>
                     </Stack>
                 </Stack>
                 <TableContainer component={Paper}>
