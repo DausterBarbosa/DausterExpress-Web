@@ -1,4 +1,6 @@
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
+
+import { useQueryClient } from '@tanstack/react-query';
 
 import CancelIcon from '@mui/icons-material/Cancel';
 
@@ -52,6 +54,7 @@ interface DataCititesProp{
 }
 
 const DeliverymanPageModal:React.FC<DeliverymanPageModalProps> = ({open, setOpen}) => {
+    const queryClient = useQueryClient();
 
     const [alertType, setAlertType] = useState<AlertColor>("success");
     const [alert, setAlert] = useState(false);
@@ -108,6 +111,7 @@ const DeliverymanPageModal:React.FC<DeliverymanPageModalProps> = ({open, setOpen
                     endereco: '',
                     numero: ''
                 });
+                queryClient.invalidateQueries({queryKey: ['getDeliverymans']});
             } catch (error:any) {
                 const errorStatus = error.response.status;
 
@@ -131,7 +135,6 @@ const DeliverymanPageModal:React.FC<DeliverymanPageModalProps> = ({open, setOpen
                 value = value.replace(/\D/g,'');
                 value = value.replace(/(\d{2})(\d)/,"($1)$2");
                 value = value.replace(/(\d)(\d{4})$/,"$1-$2");
-                console.log(value);
                 handleForm("telefone", value)
             }
         }
@@ -143,7 +146,6 @@ const DeliverymanPageModal:React.FC<DeliverymanPageModalProps> = ({open, setOpen
             if(value.length < 10){
                 value = value.replace(/\D/g,'');
                 value = value.replace(/(\d)(\d{3})$/,"$1-$2");
-                console.log(value);
                 handleForm("cep", value)
             }
         }

@@ -1,6 +1,17 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import api from "../services/axios";
 
+export function useDeleteDeliveryman(){
+    return useMutation({
+        mutationKey: ['deleteDeliveryman'],
+        mutationFn: async (deliverymanId:string) => {
+            const data = await api.delete(`/deliveryman/delete/${deliverymanId}`);
+
+            return data;
+        }
+    });
+}
+
 interface FormDataProps{
     nome: string;
     sobrenome: string;
@@ -26,13 +37,23 @@ export function useRegisterDeliverymans(){
     });
 }
 
-export function useGetDeliverymans(auto:boolean){
+interface DeliverymanQueryProps {
+    page: number | null;
+    take: number | null;
+    mode: string;
+    entregador: string;
+}
+
+export function useGetDeliverymans(auto:boolean, query:DeliverymanQueryProps){
     return useQuery({
-        queryKey: ["getDeliverymans", auto],
+        queryKey: ["getDeliverymans", auto, query],
         queryFn: async () => {
             const recipients = await api.get("/deliveryman", {
                 params: {
-                    mode: "summary"
+                    page: query.page === null ? '' : query.page! + 1,
+                    take: query.take === null ? '' : query.take,
+                    mode: query.mode,
+                    entregador: query.entregador,
                 }
             });
 

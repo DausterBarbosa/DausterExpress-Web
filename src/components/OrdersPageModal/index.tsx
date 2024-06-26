@@ -56,7 +56,12 @@ const OrdersPageModal:React.FC<OrdersPageModalProps> = ({open, setOpen}) => {
 
 
     const {data:dataRecipients, isLoading:isLoadingRecipients, refetch:refetchRecipients} = useGetRecipients(false);
-    const {data:dataDeliverymans, isLoading:isLoadingDeliverymans, refetch:refetchDeliverymans} = useGetDeliverymans(false);
+    const {data:dataDeliverymans, isLoading:isLoadingDeliverymans, refetch:refetchDeliverymans} = useGetDeliverymans(false, {
+        page: null,
+        take: null,
+        mode: "summary",
+        entregador: "",
+    });
     const {mutateAsync, isPending} = useCreateOrders();
 
     async function handleCreateOrder(){
