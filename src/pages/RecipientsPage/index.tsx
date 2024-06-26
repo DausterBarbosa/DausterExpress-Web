@@ -1,3 +1,5 @@
+import {useState} from 'react';
+
 import GlobalLayout from '../../components/GlobalLayout';
 import RecipiensPageModal from '../../components/RecipientsPageModal';
 
@@ -28,15 +30,17 @@ const DeliverymanPageContainer = styled('div')({
 
 
 export default function RecipientsPage(){
+    const [recipientModalRegister, setRecipientModalRegister] = useState(false);
+
     return (
         <GlobalLayout>
-            <RecipiensPageModal/>
+            <RecipiensPageModal open={recipientModalRegister} setOpen={setRecipientModalRegister}/>
             <DeliverymanPageContainer>
                 <Stack direction="column">
                     <Typography sx={{fontWeight: 'bold', color: '#666', fontSize: '20px'}}>GERENCIAR DESTINATÁRIOS</Typography>
                     <Stack direction="row" justifyContent='space-between' margin='30px 0'>
                         <TextField sx={{backgroundColor: '#FFF'}} size='small' placeholder='Pesquisar destinatários'/>
-                        <Button variant="contained" sx={{backgroundColor: '#4d148c', fontWeight: 'bold'}}>CADASTRAR</Button>
+                        <Button variant="contained" sx={{backgroundColor: '#4d148c', fontWeight: 'bold'}} onClick={() => setRecipientModalRegister(true)}>CADASTRAR</Button>
                     </Stack>
                 </Stack>
                 <TableContainer component={Paper}>
