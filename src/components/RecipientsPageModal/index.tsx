@@ -114,7 +114,7 @@ const RecipientsPageModal:React.FC<RecipicientsPageModalProps> = ({open, setOpen
                     numero: '',
                     complemento: '',
                 });
-                queryClient.invalidateQueries({queryKey: ['getDeliverymans']});
+                queryClient.invalidateQueries({queryKey: ['getRecipients']});
             } catch (error:any) {
                 const errorStatus = error.response.status;
 

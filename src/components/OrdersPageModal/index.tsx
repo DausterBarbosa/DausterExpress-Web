@@ -55,7 +55,12 @@ const OrdersPageModal:React.FC<OrdersPageModalProps> = ({open, setOpen}) => {
     const [alert, setAlert] = useState(false);
 
 
-    const {data:dataRecipients, isLoading:isLoadingRecipients, refetch:refetchRecipients} = useGetRecipients(false);
+    const {data:dataRecipients, isLoading:isLoadingRecipients, refetch:refetchRecipients} = useGetRecipients(false, {
+        page: null,
+        take: null,
+        mode: "summary",
+        destinatario: "",
+    });
     const {data:dataDeliverymans, isLoading:isLoadingDeliverymans, refetch:refetchDeliverymans} = useGetDeliverymans(false, {
         page: null,
         take: null,
