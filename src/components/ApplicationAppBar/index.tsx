@@ -1,7 +1,8 @@
+import { NavLink } from "react-router-dom";
+
 import AppBar from '@mui/material/AppBar';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
@@ -18,23 +19,79 @@ export default function ApplicationAppBar(){
             </Typography>
             <Box sx={{display:'flex', flexDirection:'row', alignItems:'center'}}>
                 <Toolbar>
-                    <MenuItem>
-                        <Typography sx={{fontWeight: 'bold', fontSize:'15px'}}>ENCOMENDAS</Typography>
-                    </MenuItem>
-                    <MenuItem>
-                        <Typography sx={{fontWeight: 'bold', fontSize:'15px'}}>ENTREGADORES</Typography>
-                    </MenuItem>
-                    <MenuItem>
-                        <Typography sx={{fontWeight: 'bold', fontSize:'15px'}}>DESTINATÁRIOS</Typography>
-                    </MenuItem>
-                    <MenuItem>
-                        <Typography sx={{fontWeight: 'bold', fontSize:'15px'}}>PROBLEMAS</Typography>
-                    </MenuItem>
+                    <NavLink
+                        to="/encomendas"
+                        style={({isActive}) => ({
+                            backgroundColor: isActive ? "rgba(255, 255, 255, 0.3)": "",
+                            textDecoration: "none",
+                            fontWeight: "bold",
+                            fontSize: "15px",
+                            color: "#FFF",
+                            fontFamily: "arial",
+                            padding: "10px",
+                        })}
+                    >
+                        ENCOMENDAS
+                    </NavLink>
+                    <NavLink
+                        to="/entregadores"
+                        style={({isActive}) => ({
+                            backgroundColor: isActive ? "rgba(255, 255, 255, 0.3)": "",
+                            textDecoration: "none",
+                            fontWeight: "bold",
+                            fontSize: "15px",
+                            color: "#FFF",
+                            fontFamily: "arial",
+                            padding: "10px",
+                        })}
+                    >
+                            ENTREGADORES
+                    </NavLink>
+                    <NavLink
+                        to="/destinatarios"
+                        style={({isActive}) => ({
+                            backgroundColor: isActive ? "rgba(255, 255, 255, 0.3)": "",
+                            textDecoration: "none",
+                            fontWeight: "bold",
+                            fontSize: "15px",
+                            color: "#FFF",
+                            fontFamily: "arial",
+                            padding: "10px",
+                        })}
+                    >
+                        DESTINATÁRIOS
+                    </NavLink>
+                    <NavLink
+                        to="/problemas"
+                        style={({isActive}) => ({
+                            backgroundColor: isActive ? "rgba(255, 255, 255, 0.3)": "",
+                            textDecoration: "none",
+                            fontWeight: "bold",
+                            fontSize: "15px",
+                            color: "#FFF",
+                            fontFamily: "arial",
+                            padding: "10px",
+                        })}
+                    >
+                        PROBLEMAS
+                    </NavLink>
                 </Toolbar>
-                <MenuItem>
-                    <Typography sx={{fontWeight: 'bold', fontSize:'15px', color:'red'}}>SAIR</Typography>
+                <NavLink
+                    to="/"
+                    style={({isActive}) => ({
+                        textDecoration: "none",
+                        fontWeight: "bold",
+                        fontSize: "15px",
+                        color: "#FFF",
+                        fontFamily: "arial",
+                        padding: "10px",
+                        display: "flex",
+                        alignItems: "center"
+                    })}
+                >
+                    SAIR
                     <ExitToAppIcon sx={{marginLeft:'5px', color:'red'}}/>
-                </MenuItem>
+                </NavLink>
             </Box>
         </AppBar>
     );
