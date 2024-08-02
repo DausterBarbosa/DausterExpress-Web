@@ -1,11 +1,18 @@
+import {useState} from "react";
+
 import GlobalLayout from "../../components/GlobalLayout";
 
 import SendIcon from '@mui/icons-material/Send';
+import PersonIcon from '@mui/icons-material/Person';
 
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
 import { styled } from '@mui/system';
+
+import {useGetDeliverymans} from "../../controllers/deliverymanController";
+
+import Support from "../../assets/images/support.svg";
 
 const SupportPageContainer = styled('div')({
     width: '90vw',
@@ -96,7 +103,45 @@ const ItemListLabel = styled('p')({
     marginLeft: '10px',
 });
 
+const PhotoEmpty = styled('div')({
+    width: '50px',
+    height: '50px',
+    borderRadius: '100px',
+    background: '#c5c5c5',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+});
+
+const PanelContainer = styled('div')({
+    flex: 1,
+    background: '#EEE',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+});
+
+interface DeliverymanProps{
+    id: string;
+    nome: string;
+    sobrenome: string;
+    url_image_profile: string;
+}
+
 export default function SupportPage(){
+    const [deliveryman, setDeliveryman] = useState<DeliverymanProps | null>(null);
+
+    const {data, isLoading} = useGetDeliverymans(true, {
+        page: null,
+        take: null,
+        mode: "summary",
+        entregador: "",
+    });
+
+    function handleDeliveryman(item:DeliverymanProps){
+        setDeliveryman(item);
+    }
+
     return (
         <GlobalLayout>
             <SupportPageContainer>
@@ -111,49 +156,57 @@ export default function SupportPage(){
                             },
                         }} size='small' fullWidth placeholder="Pesquisar entregador"/>
                     </ContactListHeader>
-                    <ItemList>
-                        <ItemListImage src="https://www.eutesalvo.com/arquivos/upload/eutesalvo-39551fc526efc2565b395948069b8cc1.jpg"/>
-                        <ItemListLabel>Adolfinho Hitler</ItemListLabel>
-                    </ItemList>
-                    <ItemList>
-                        <ItemListImage src="https://www.eutesalvo.com/arquivos/upload/eutesalvo-39551fc526efc2565b395948069b8cc1.jpg"/>
-                        <ItemListLabel>Adolfinho Hitler</ItemListLabel>
-                    </ItemList>
-                    <ItemList>
-                        <ItemListImage src="https://www.eutesalvo.com/arquivos/upload/eutesalvo-39551fc526efc2565b395948069b8cc1.jpg"/>
-                        <ItemListLabel>Adolfinho Hitler</ItemListLabel>
-                    </ItemList>
-                    <ItemList>
-                        <ItemListImage src="https://www.eutesalvo.com/arquivos/upload/eutesalvo-39551fc526efc2565b395948069b8cc1.jpg"/>
-                        <ItemListLabel>Adolfinho Hitler</ItemListLabel>
-                    </ItemList>
-                    <ItemList>
-                        <ItemListImage src="https://www.eutesalvo.com/arquivos/upload/eutesalvo-39551fc526efc2565b395948069b8cc1.jpg"/>
-                        <ItemListLabel>Adolfinho Hitler</ItemListLabel>
-                    </ItemList>
+                    {isLoading ? (
+                        <p>asdf</p>
+                    ) : (
+                        data.data.map((item:DeliverymanProps) => (
+                            <ItemList onClick={() => handleDeliveryman(item)} sx={{background: deliveryman !== null ? item.id === deliveryman.id ? "#EEE" : "" : ""}}>
+                                {item.url_image_profile === null ? (
+                                    <PhotoEmpty>
+                                        <PersonIcon sx={{fontSize: '30px', color: '#333'}}/>
+                                    </PhotoEmpty>
+                                ) : (
+                                    <ItemListImage src={item.url_image_profile}/>
+                                )}
+                                <ItemListLabel>{item.nome + " " + item.sobrenome}</ItemListLabel>
+                            </ItemList>
+                        ))
+                    )}
                 </ContactList>
-                <ChatContainer>
-                    <ProfileBar>
-                        <ProfileImage src="https://www.eutesalvo.com/arquivos/upload/eutesalvo-39551fc526efc2565b395948069b8cc1.jpg"/>
-                        <ProfileLabel>Adolfinho Hitler</ProfileLabel>
-                    </ProfileBar>
-                    <MessagesContainer>
+                {deliveryman === null ? (
+                    <PanelContainer>
+                        <img src={Support} alt="Atendente logo" height="400px"/>
+                    </PanelContainer>
+                ) : (
+                    <ChatContainer>
+                        <ProfileBar>
+                            {deliveryman.url_image_profile === null ? (
+                                <PhotoEmpty>
+                                    <PersonIcon sx={{fontSize: '30px', color: '#333'}}/>
+                                </PhotoEmpty>
+                            ) : (
+                                <ItemListImage src={deliveryman.url_image_profile}/>
+                            )}
+                            <ProfileLabel>{deliveryman.nome + " " + deliveryman.sobrenome}</ProfileLabel>
+                        </ProfileBar>
+                        <MessagesContainer>
 
-                    </MessagesContainer>
-                    <TextFieldContainer>
-                        <TextField sx={{
-                            background: "#FFF", 
-                            '& .MuiOutlinedInput-root': {
-                            '& fieldset': {
-                                border: 'none',
-                            },
-                            },
-                        }} size='small' fullWidth placeholder="Mensagem"/>
-                        <Button style={{background: "#ff6200", marginLeft: '10px'}}>
-                            <SendIcon sx={{fontSize: '30px', color: '#FFF'}}/>
-                        </Button>
-                    </TextFieldContainer>
-                </ChatContainer>
+                        </MessagesContainer>
+                        <TextFieldContainer>
+                            <TextField sx={{
+                                background: "#FFF", 
+                                '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    border: 'none',
+                                },
+                                },
+                            }} size='small' fullWidth placeholder="Mensagem"/>
+                            <Button style={{background: "#ff6200", marginLeft: '10px'}}>
+                                <SendIcon sx={{fontSize: '30px', color: '#FFF'}}/>
+                            </Button>
+                        </TextFieldContainer>
+                    </ChatContainer>
+                )}
             </SupportPageContainer>
         </GlobalLayout>
     );
