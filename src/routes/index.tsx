@@ -5,6 +5,7 @@ import LoginPage from '../pages/LoginPage';
 import OrdersPage from '../pages/OrdersPage';
 import ProblemsPage from '../pages/ProblemsPage';
 import RecipientsPage from '../pages/RecipientsPage';
+import SupportPage from "../pages/SupportPage";
 
 export default function RoutesComponent(){
     return (
@@ -15,6 +16,7 @@ export default function RoutesComponent(){
                 <Route path="/entregadores" element={<DeliverymanPage/>}/>
                 <Route path="/destinatarios" element={<RecipientsPage/>}/>
                 <Route path="/problemas" element={<ProblemsPage/>}/>
+                <Route path="/suporte" element={<SupportPage/>}/>
             </Routes>
         </BrowserRouter>
     );

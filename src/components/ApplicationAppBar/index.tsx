@@ -75,6 +75,20 @@ export default function ApplicationAppBar(){
                     >
                         PROBLEMAS
                     </NavLink>
+                    <NavLink
+                        to="/suporte"
+                        style={({isActive}) => ({
+                            backgroundColor: isActive ? "rgba(255, 255, 255, 0.3)": "",
+                            textDecoration: "none",
+                            fontWeight: "bold",
+                            fontSize: "15px",
+                            color: "#FFF",
+                            fontFamily: "arial",
+                            padding: "10px",
+                        })}
+                    >
+                        SUPORTE
+                    </NavLink>
                 </Toolbar>
                 <NavLink
                     to="/"
