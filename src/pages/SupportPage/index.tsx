@@ -39,7 +39,7 @@ const ChatContainer = styled('div')({
 
 const MessagesContainer = styled('div')({
     height: '448px',
-    background: '#EEE'
+    background: '#cac6c6'
 });
 
 const TextFieldContainer = styled('div')({
@@ -121,6 +121,11 @@ const PanelContainer = styled('div')({
     justifyContent: 'center',
 });
 
+const ContactsContainer = styled('div')({
+    overflowY: 'scroll',
+    height: '510px',
+});
+
 interface DeliverymanProps{
     id: string;
     nome: string;
@@ -130,6 +135,8 @@ interface DeliverymanProps{
 
 export default function SupportPage(){
     const [deliveryman, setDeliveryman] = useState<DeliverymanProps | null>(null);
+
+    const [searchDeliveryman, setSearchDeliveryman] = useState("");
 
     const {data, isLoading} = useGetDeliverymans(true, {
         page: null,
@@ -142,35 +149,49 @@ export default function SupportPage(){
         setDeliveryman(item);
     }
 
+    function handleSearchdeliveryman(){
+        return data.data.filter((item:DeliverymanProps) => (item.nome + " " + item.sobrenome).toLowerCase().includes(searchDeliveryman.toLowerCase()));
+    } 
+
     return (
         <GlobalLayout>
             <SupportPageContainer>
                 <ContactList>
                     <ContactListHeader>
-                        <TextField sx={{
-                            background: "#FFF", 
-                            '& .MuiOutlinedInput-root': {
-                            '& fieldset': {
-                                border: 'none',
-                            },
-                            },
-                        }} size='small' fullWidth placeholder="Pesquisar entregador"/>
+                        <TextField
+                            sx={{
+                                background: "#FFF", 
+                                '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    border: 'none',
+                                },
+                                },
+                            }}
+                            size='small'
+                            fullWidth
+                            placeholder="Pesquisar entregador"
+                            onChange={(e) => setSearchDeliveryman(e.target.value)}
+                        />
                     </ContactListHeader>
                     {isLoading ? (
                         <p>asdf</p>
                     ) : (
-                        data.data.map((item:DeliverymanProps) => (
-                            <ItemList onClick={() => handleDeliveryman(item)} sx={{background: deliveryman !== null ? item.id === deliveryman.id ? "#EEE" : "" : ""}}>
-                                {item.url_image_profile === null ? (
-                                    <PhotoEmpty>
-                                        <PersonIcon sx={{fontSize: '30px', color: '#333'}}/>
-                                    </PhotoEmpty>
-                                ) : (
-                                    <ItemListImage src={item.url_image_profile}/>
-                                )}
-                                <ItemListLabel>{item.nome + " " + item.sobrenome}</ItemListLabel>
-                            </ItemList>
-                        ))
+                        <ContactsContainer>
+                            {
+                                handleSearchdeliveryman().map((item:DeliverymanProps) => (
+                                    <ItemList onClick={() => handleDeliveryman(item)} sx={{background: deliveryman !== null ? item.id === deliveryman.id ? "#EEE" : "" : ""}}>
+                                    {item.url_image_profile === null ? (
+                                        <PhotoEmpty>
+                                            <PersonIcon sx={{fontSize: '30px', color: '#333'}}/>
+                                        </PhotoEmpty>
+                                    ) : (
+                                        <ItemListImage src={item.url_image_profile}/>
+                                    )}
+                                    <ItemListLabel>{item.nome + " " + item.sobrenome}</ItemListLabel>
+                                    </ItemList>
+                                ))
+                            }
+                        </ContactsContainer>
                     )}
                 </ContactList>
                 {deliveryman === null ? (
