@@ -1,5 +1,8 @@
 import {useState} from "react";
 
+import {initializeApp} from "firebase/app";
+import {getFirestore} from "firebase/firestore";
+
 import GlobalLayout from "../../components/GlobalLayout";
 
 import SendIcon from '@mui/icons-material/Send';
@@ -13,6 +16,8 @@ import { styled } from '@mui/system';
 import {useGetDeliverymans} from "../../controllers/deliverymanController";
 
 import Support from "../../assets/images/support.svg";
+
+import firebaseConfig from "../../config/firebase";
 
 const SupportPageContainer = styled('div')({
     width: '90vw',
@@ -134,9 +139,14 @@ interface DeliverymanProps{
 }
 
 export default function SupportPage(){
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
     const [deliveryman, setDeliveryman] = useState<DeliverymanProps | null>(null);
 
     const [searchDeliveryman, setSearchDeliveryman] = useState("");
+
+    const [message, setMessage] = useState("");
 
     const {data, isLoading} = useGetDeliverymans(true, {
         page: null,
@@ -151,7 +161,11 @@ export default function SupportPage(){
 
     function handleSearchdeliveryman(){
         return data.data.filter((item:DeliverymanProps) => (item.nome + " " + item.sobrenome).toLowerCase().includes(searchDeliveryman.toLowerCase()));
-    } 
+    }
+
+    function sendMessage(){
+        console.log("asdf")
+    }
 
     return (
         <GlobalLayout>
@@ -221,8 +235,13 @@ export default function SupportPage(){
                                     border: 'none',
                                 },
                                 },
-                            }} size='small' fullWidth placeholder="Mensagem"/>
-                            <Button style={{background: "#ff6200", marginLeft: '10px'}}>
+                            }}
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            size='small'
+                            fullWidth
+                            placeholder="Mensagem"/>
+                            <Button style={{background: "#ff6200", marginLeft: '10px'}} disabled={message.trim() === ""} onClick={sendMessage}>
                                 <SendIcon sx={{fontSize: '30px', color: '#FFF'}}/>
                             </Button>
                         </TextFieldContainer>
