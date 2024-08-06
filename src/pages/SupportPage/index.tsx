@@ -1,7 +1,7 @@
-import {useState} from "react";
+import {useState, useEffect, useRef} from "react";
 
 import {initializeApp} from "firebase/app";
-import {getFirestore} from "firebase/firestore";
+import {getFirestore, collection, addDoc, onSnapshot, orderBy, query, where} from "firebase/firestore";
 
 import GlobalLayout from "../../components/GlobalLayout";
 
@@ -33,7 +33,6 @@ const SupportPageContainer = styled('div')({
 
 const ContactList = styled('div')({
     width: '30%',
-    borderRight: '1px solid #FFF',
     background: '#FFF',
 });
 
@@ -42,17 +41,13 @@ const ChatContainer = styled('div')({
     flexDirection: 'column',
 });
 
-const MessagesContainer = styled('div')({
-    height: '448px',
-    background: '#cac6c6'
-});
-
-const TextFieldContainer = styled('div')({
+const TextFieldContainer = styled('form')({
     display: 'flex',
     background: '#4d148c',
     flexDirection: 'row',
     alignItems: 'center',
     padding: '10px',
+    borderTop: "1px solid #cac6c6",
 });
 
 const ProfileBar = styled('div')({
@@ -61,6 +56,7 @@ const ProfileBar = styled('div')({
     flexDirection: 'row',
     alignItems: 'center',
     padding: '5px 10px',
+    borderBottom: "1px solid #cac6c6"
 });
 
 const ProfileImage = styled('img')({
@@ -131,6 +127,25 @@ const ContactsContainer = styled('div')({
     height: '510px',
 });
 
+const MessagesContainer = styled('div')({
+    height: '448px',
+    background: '#cac6c6',
+    overflowY: "scroll",
+    display: "flex",
+    flexDirection: "column",
+    padding: "20px"
+});
+
+const BubbleMessage = styled('p')({
+    marginTop: "3px",
+    fontSize: "17px",
+    color: "#FFF",
+    padding: "10px",
+    display: "inline-block",
+    maxWidth: "450px",
+    borderRadius: "15px",
+});
+
 interface DeliverymanProps{
     id: string;
     nome: string;
@@ -138,7 +153,21 @@ interface DeliverymanProps{
     url_image_profile: string;
 }
 
+interface MessagesProps{
+    id: string;
+    content: string;
+    receiver_id: string;
+    receiver_name: string;
+    sender_id: string;
+    sender_name: string;
+    timestamp: Date;
+}
+
 export default function SupportPage(){
+    const [messages, setMessages] = useState<MessagesProps[]>([]);
+
+    const listRef = useRef<HTMLDivElement>(null);
+
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
@@ -163,9 +192,52 @@ export default function SupportPage(){
         return data.data.filter((item:DeliverymanProps) => (item.nome + " " + item.sobrenome).toLowerCase().includes(searchDeliveryman.toLowerCase()));
     }
 
-    function sendMessage(){
-        console.log("asdf")
+    async function sendMessage(e:any){
+        e.preventDefault();
+
+        try {
+            const doc = await addDoc(collection(db, "messages"), {
+                sender_id: "12345",
+                sender_name: "Molotov",
+                receiver_id: deliveryman?.id,
+                receiver_name: deliveryman?.nome + " " + deliveryman?.sobrenome,
+                content: message.trim(),
+                timestamp: new Date(),
+            });
+
+            setMessage("");
+        } catch (error) {
+            
+        }
     }
+
+    useEffect(() => {
+        function handleRealTime(){
+            if(deliveryman !== null){
+                const messageQuery = query(collection(db, "messages"), orderBy("timestamp", "asc"), where("sender_id", "==", deliveryman?.id));
+
+                onSnapshot(messageQuery, (docs) => {
+                    const lastMessages: MessagesProps[] = [];
+
+                    docs.forEach((doc) => {
+                        lastMessages.push({
+                            ...doc.data() as MessagesProps,
+                            timestamp: doc.data().timestamp,
+                            id: doc.id,
+                        });
+                    });
+
+                    setMessages(lastMessages);
+                });
+            }
+        }
+
+        handleRealTime();
+    }, [deliveryman]);
+
+    useEffect(() => {
+        listRef.current?.lastElementChild?.scrollIntoView();
+    }, [messages, deliveryman]);
 
     return (
         <GlobalLayout>
@@ -181,6 +253,7 @@ export default function SupportPage(){
                                 },
                                 },
                             }}
+                            autoComplete="off"
                             size='small'
                             fullWidth
                             placeholder="Pesquisar entregador"
@@ -224,8 +297,10 @@ export default function SupportPage(){
                             )}
                             <ProfileLabel>{deliveryman.nome + " " + deliveryman.sobrenome}</ProfileLabel>
                         </ProfileBar>
-                        <MessagesContainer>
-
+                        <MessagesContainer ref={listRef}>
+                            {messages.map((item) => (
+                                <BubbleMessage style={{background: item.sender_id === "12345" ? "#ff6200" : "#4d148c", alignSelf: item.sender_id === "12345" ? "flex-end" : "flex-start"}}>{item.content}</BubbleMessage>
+                            ))}
                         </MessagesContainer>
                         <TextFieldContainer>
                             <TextField sx={{
@@ -236,12 +311,14 @@ export default function SupportPage(){
                                 },
                                 },
                             }}
+                            autoComplete="off"
                             value={message}
+                            onSubmit={sendMessage}
                             onChange={(e) => setMessage(e.target.value)}
                             size='small'
                             fullWidth
                             placeholder="Mensagem"/>
-                            <Button style={{background: "#ff6200", marginLeft: '10px'}} disabled={message.trim() === ""} onClick={sendMessage}>
+                            <Button type="submit" style={{background: "#ff6200", marginLeft: '10px'}} disabled={message.trim() === ""} onClick={sendMessage}>
                                 <SendIcon sx={{fontSize: '30px', color: '#FFF'}}/>
                             </Button>
                         </TextFieldContainer>
