@@ -1,7 +1,7 @@
 import {useState, useEffect, useRef} from "react";
 
 import {initializeApp} from "firebase/app";
-import {getFirestore, collection, addDoc, onSnapshot, orderBy, query, where} from "firebase/firestore";
+import {getFirestore, collection, addDoc, onSnapshot, orderBy, query, where, or, and} from "firebase/firestore";
 
 import GlobalLayout from "../../components/GlobalLayout";
 
@@ -214,9 +214,10 @@ export default function SupportPage(){
     useEffect(() => {
         function handleRealTime(){
             if(deliveryman !== null){
-                const messageQuery = query(collection(db, "messages"), orderBy("timestamp", "asc"), where("sender_id", "==", deliveryman?.id));
+                const messageQuery = query(collection(db, "messages"), or(where("sender_id", "==", deliveryman?.id), where("receiver_id", "==", deliveryman?.id)));
+                const completeQuery = query(messageQuery, orderBy("timestamp", "asc"));
 
-                onSnapshot(messageQuery, (docs) => {
+                onSnapshot(completeQuery, (docs) => {
                     const lastMessages: MessagesProps[] = [];
 
                     docs.forEach((doc) => {
