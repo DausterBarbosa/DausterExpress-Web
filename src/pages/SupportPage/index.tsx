@@ -15,6 +15,8 @@ import { styled } from '@mui/system';
 
 import {useGetDeliverymans} from "../../controllers/deliverymanController";
 
+import {useCreateNotification} from "../../controllers/notificationController";
+
 import Support from "../../assets/images/support.svg";
 
 import firebaseConfig from "../../config/firebase";
@@ -151,6 +153,7 @@ interface DeliverymanProps{
     nome: string;
     sobrenome: string;
     url_image_profile: string;
+    fcm_token: string;
 }
 
 interface MessagesProps{
@@ -177,6 +180,8 @@ export default function SupportPage(){
 
     const [message, setMessage] = useState("");
 
+    const {mutateAsync} = useCreateNotification();
+
     const {data, isLoading} = useGetDeliverymans(true, {
         page: null,
         take: null,
@@ -186,6 +191,7 @@ export default function SupportPage(){
 
     function handleDeliveryman(item:DeliverymanProps){
         setDeliveryman(item);
+        setMessage("");
     }
 
     function handleSearchdeliveryman(){
@@ -196,16 +202,23 @@ export default function SupportPage(){
         e.preventDefault();
 
         try {
+            const messageToSend = message.trim();
+
+            setMessage("");
+
             const doc = await addDoc(collection(db, "messages"), {
                 sender_id: "12345",
                 sender_name: "Molotov",
                 receiver_id: deliveryman?.id,
                 receiver_name: deliveryman?.nome + " " + deliveryman?.sobrenome,
-                content: message.trim(),
+                content: messageToSend,
                 timestamp: new Date(),
             });
 
-            setMessage("");
+            await mutateAsync({
+                fcm_token: deliveryman!.fcm_token,
+                message: messageToSend,
+            });
         } catch (error) {
             
         }
