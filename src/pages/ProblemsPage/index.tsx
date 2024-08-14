@@ -57,6 +57,7 @@ interface OrderProps{
         telefone: string;
         email: string;
     };
+    problemas: any[];
 }
 
 export default function ProblemsPage(){

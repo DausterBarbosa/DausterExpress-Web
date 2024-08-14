@@ -5,6 +5,8 @@ import {getFirestore, collection, addDoc, onSnapshot, orderBy, query, where, or,
 
 import GlobalLayout from "../../components/GlobalLayout";
 
+import CircularProgress from '@mui/material/CircularProgress';
+
 import SendIcon from '@mui/icons-material/Send';
 import PersonIcon from '@mui/icons-material/Person';
 
@@ -136,6 +138,13 @@ const MessagesContainer = styled('div')({
     display: "flex",
     flexDirection: "column",
     padding: "20px"
+});
+
+const LoadingContainer = styled('div')({
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    height: '510px',
 });
 
 const BubbleMessage = styled('p')({
@@ -275,7 +284,12 @@ export default function SupportPage(){
                         />
                     </ContactListHeader>
                     {isLoading ? (
-                        <p>asdf</p>
+                        <LoadingContainer>
+                            <CircularProgress style={{
+                                color:'#4d148c'}}
+                                size={40}
+                            />
+                        </LoadingContainer>
                     ) : (
                         <ContactsContainer>
                             {
