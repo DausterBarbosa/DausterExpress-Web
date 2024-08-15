@@ -10,9 +10,7 @@ import { styled } from '@mui/system';
 const LoginPageContainer = styled('div')({
     width: '100vw',
     height: '100vh',
-    backgroundImage: 'url(https://wallpaperbat.com/img/1449072-wp3704688-logistics-wallpaper.jpg)',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
+    background: "#4d148c",
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',

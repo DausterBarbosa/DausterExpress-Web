@@ -50,6 +50,7 @@ interface DeliverymanProps{
     cep: string;
     endereco: string;
     numero: string;
+    url_image_profile: string;
 }
 
 export default function DeliverymanPage(){

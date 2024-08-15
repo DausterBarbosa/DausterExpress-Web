@@ -14,7 +14,7 @@ import { Box } from "@mui/material";
 
 const GeneralContainer = styled("div")({
     background: "#FFF",
-    width: '600px',
+    width: '700px',
     position: 'relative',
 });
 
@@ -112,7 +112,6 @@ const ProblemInformationModal:React.FC<InformationModalProps> = ({open, setOpen,
     };
 
     return (
-        console.log(data),
         <Modal open={open} onClose={() => setOpen(false)} sx={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
             <GeneralContainer>
                 <CustomTabs value={value} onChange={handleChange}>

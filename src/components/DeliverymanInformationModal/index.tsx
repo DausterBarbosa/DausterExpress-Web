@@ -3,6 +3,8 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import CancelIcon from '@mui/icons-material/Cancel';
 
+import PersonIcon from '@mui/icons-material/Person';
+
 import { styled } from '@mui/system';
 
 const OrdersPageModalContainer = styled('div')({
@@ -10,6 +12,31 @@ const OrdersPageModalContainer = styled('div')({
     padding: '20px',
     position: 'relative',
     width: '600px'
+});
+
+const ProfileImage = styled("img")({
+    width: "200px",
+    height: "200px",
+    borderRadius: "100px",
+    objectFit: "cover"
+});
+
+const ProfileImageEmpty = styled("div")({
+    width: "200px",
+    height: "200px",
+    borderRadius: "100px",
+    background: "#EEE",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+});
+
+const ImageContainer = styled("div")({
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: "20px"
 });
 
 interface DeliverymanProps{
@@ -23,6 +50,7 @@ interface DeliverymanProps{
     cep: string;
     endereco: string;
     numero: string;
+    url_image_profile: string;
 }
 
 interface InformationModalProps {
@@ -33,8 +61,22 @@ interface InformationModalProps {
 
 const DeliverymanInformationModal:React.FC<InformationModalProps> = ({open, setOpen, data}) => {
     return (
+        console.log(data),
         <Modal open={open} onClose={() => setOpen(false)} sx={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
             <OrdersPageModalContainer>
+                {data !== undefined && (
+                    data.url_image_profile === null ? (
+                        <ImageContainer>
+                            <ProfileImageEmpty>
+                                <PersonIcon sx={{fontSize: "150px", color: "#333"}}/>
+                            </ProfileImageEmpty>
+                        </ImageContainer>
+                    ) : (
+                        <ImageContainer>
+                            <ProfileImage src={data.url_image_profile}/>
+                        </ImageContainer>
+                    )
+                )}
                 <Typography><span style={{fontWeight:"bold", fontSize: "15px", color: "#61605f"}}>NOME:</span> {data?.nome + " " + data?.sobrenome}</Typography>
                 <Typography><span style={{fontWeight:"bold", fontSize: "15px", color: "#61605f"}}>EMAIL:</span> {data?.email}</Typography>
                 <Typography><span style={{fontWeight:"bold", fontSize: "15px", color: "#61605f"}}>TELEFONE:</span> {data?.telefone}</Typography>
