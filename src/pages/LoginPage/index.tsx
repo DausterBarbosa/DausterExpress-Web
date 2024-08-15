@@ -1,11 +1,18 @@
+import {useState, useContext} from "react";
+
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import Snackbar from '@mui/material/Snackbar';
+import Alert, {AlertColor} from '@mui/material/Alert';
+
+import AuthContext from "../../contexts/auth";
 
 import { styled } from '@mui/system';
+import { AxiosError } from "axios";
 
 const LoginPageContainer = styled('div')({
     width: '100vw',
@@ -25,6 +32,32 @@ const LoginPagePanelContainer = styled('form')({
 })
 
 export default function LoginPage(){
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const [alertType, setAlertType] = useState<AlertColor>("success");
+    const [alert, setAlert] = useState(false);
+    const [messageAlert, setMessageAlert] = useState("");
+
+    const {signIn} = useContext(AuthContext);
+
+    async function handleLogin(){
+        if(email.trim() === "" || password.trim() === ""){
+            setAlertType("warning");
+            setMessageAlert("Preencha todos os campos!");
+            setAlert(true);
+        }
+        else {
+            try {
+                await signIn(email, password);   
+            } catch (error) {
+                setAlertType("error");
+                setMessageAlert("Credenciais inválidas!");
+                setAlert(true);
+            }
+        }
+    }
+
     return (
         <LoginPageContainer>
             <LoginPagePanelContainer>
@@ -36,7 +69,12 @@ export default function LoginPage(){
                     Express
                 </Box>
                 </Typography>
-                <TextField fullWidth placeholder='Email' sx={
+                <TextField
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                fullWidth
+                placeholder='Email'
+                sx={
                     {
                         '& .MuiOutlinedInput-root': {
                             '&.Mui-focused fieldset': {
@@ -45,7 +83,13 @@ export default function LoginPage(){
                           },
                     }
                 }/>
-                <TextField fullWidth placeholder='Senha' type='password' sx={
+                <TextField
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                fullWidth
+                placeholder='Senha'
+                type='password'
+                sx={
                     {
                         margin: '10px 0 10px 0',
                         '& .MuiOutlinedInput-root': {
@@ -56,7 +100,10 @@ export default function LoginPage(){
                     }
                 }/>
                 <FormControlLabel control={<Checkbox />} label="Permanecer conectado" sx={{width:'100%', color:'#666'}}/>
-                <Button fullWidth sx={{
+                <Button
+                onClick={handleLogin}
+                fullWidth
+                sx={{
                     backgroundColor: '#ff6200',
                     color: 'white',
                     padding: '10px',
@@ -66,6 +113,16 @@ export default function LoginPage(){
                     }}
                 }>ENTRAR</Button>    
             </LoginPagePanelContainer>
+            <Snackbar open={alert} autoHideDuration={6000} anchorOrigin={{vertical: "top", horizontal: "right"}} onClose={() => setAlert(false)}>
+                    <Alert
+                    onClose={() => setAlert(false)}
+                    severity={alertType}
+                    variant="filled"
+                    sx={{ width: '100%' }}
+                    >
+                    {messageAlert}
+                    </Alert>
+                </Snackbar>
         </LoginPageContainer>
     );
 }

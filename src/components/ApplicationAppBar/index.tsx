@@ -1,3 +1,5 @@
+import {useContext} from "react";
+
 import { NavLink } from "react-router-dom";
 
 import AppBar from '@mui/material/AppBar';
@@ -6,7 +8,11 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
+import AuthContext from "../../contexts/auth";
+
 export default function ApplicationAppBar(){
+    const {signOut} = useContext(AuthContext);
+
     return (
         <AppBar position='fixed' elevation={5} sx={{backgroundColor:'#4d148c', padding:'0 10px 0 20px', alignItems:'center', flexDirection:'row', justifyContent:'space-between'}}>
             <Typography>
@@ -91,6 +97,7 @@ export default function ApplicationAppBar(){
                     </NavLink>
                 </Toolbar>
                 <NavLink
+                    onClick={signOut}
                     to="/"
                     style={({isActive}) => ({
                         textDecoration: "none",
