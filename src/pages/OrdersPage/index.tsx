@@ -79,6 +79,7 @@ interface OrderProps{
     imagem_url: string | null;
     data_retirada: string | null;
     data_entrega: string | null;
+    description_problem: string;
     status: string;
     destinatario: {
         nome: string;
@@ -91,6 +92,7 @@ interface OrderProps{
         telefone: string;
         email: string;
     };
+    problemas: any[];
 }
 
 export default function OrdersPage(){

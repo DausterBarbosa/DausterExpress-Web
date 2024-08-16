@@ -22,8 +22,10 @@ interface AuthContextData {
     user: User | null;
     loading: boolean;
     isPending: boolean;
+    isChecked: boolean;
     signIn(email:string, password:string):Promise<void>;
     signOut(): void;
+    handleChecked(state:boolean): void;
 }
 
 interface AuthProviderProps {
@@ -33,20 +35,26 @@ interface AuthProviderProps {
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 export const AuthProvider:React.FC<AuthProviderProps> = ({children}) => {
+    const [isChecked, setIsChecked] = useState(false);
+
     const [loading, setLoading] = useState(true);
 
     const {mutateAsync, isPending} = useGetAuthorization();
 
     const [user, setUser] = useState<User | null>(null);
 
+    function handleChecked(state:boolean){
+        setIsChecked(state);
+    }
+
     useEffect(() => {
         async function loadStorageData() {
             const storagedUser = await localStorage.getItem("@DausterExpressAuth:user");
             const storagedToken = await localStorage.getItem("@DausterExpressAuth:token");
-    
-            Api.defaults.headers.Authorization = `Bearer ${storagedToken}`;
-
+            
             if (storagedUser && storagedToken){
+                Api.defaults.headers.Authorization = `Bearer ${storagedToken}`;
+
                 setUser(JSON.parse(storagedUser));
             }
 
@@ -61,8 +69,10 @@ export const AuthProvider:React.FC<AuthProviderProps> = ({children}) => {
 
         Api.defaults.headers.Authorization = `Bearer ${data.data.data.token}`;
 
-        await localStorage.setItem("@DausterExpressAuth:user", JSON.stringify(data.data.data.user));
-        await localStorage.setItem("@DausterExpressAuth:token", data.data.data.token);
+        if(isChecked){
+            await localStorage.setItem("@DausterExpressAuth:user", JSON.stringify(data.data.data.user));
+            await localStorage.setItem("@DausterExpressAuth:token", data.data.data.token);
+        }
 
         setUser(data.data.data.user);
     }
@@ -73,7 +83,7 @@ export const AuthProvider:React.FC<AuthProviderProps> = ({children}) => {
     }
 
     return (
-        <AuthContext.Provider value={{signed: !!user, user, loading, isPending, signIn, signOut}}>
+        <AuthContext.Provider value={{signed: !!user, user, loading, isPending, signIn, signOut, isChecked, handleChecked}}>
             {children}
         </AuthContext.Provider>
     );

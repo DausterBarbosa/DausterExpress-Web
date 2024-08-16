@@ -9,6 +9,8 @@ import ProblemsPage from '../pages/ProblemsPage';
 import RecipientsPage from '../pages/RecipientsPage';
 import SupportPage from "../pages/SupportPage";
 
+import LoadingModal from "../components/LoadingModal";
+
 import AuthContext from "../contexts/auth";
 
 import ProtectedRoute from "./protectedRoute";
@@ -17,7 +19,7 @@ export default function RoutesComponent(){
     const {signed, loading} = useContext(AuthContext);
 
     if(loading){
-        return <p>carregando</p>;
+        return <LoadingModal/>;
     }
 
     return (

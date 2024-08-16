@@ -8,11 +8,11 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Snackbar from '@mui/material/Snackbar';
 import Alert, {AlertColor} from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import AuthContext from "../../contexts/auth";
 
 import { styled } from '@mui/system';
-import { AxiosError } from "axios";
 
 const LoginPageContainer = styled('div')({
     width: '100vw',
@@ -39,7 +39,7 @@ export default function LoginPage(){
     const [alert, setAlert] = useState(false);
     const [messageAlert, setMessageAlert] = useState("");
 
-    const {signIn} = useContext(AuthContext);
+    const {signIn, isChecked, handleChecked, isPending} = useContext(AuthContext);
 
     async function handleLogin(){
         if(email.trim() === "" || password.trim() === ""){
@@ -99,8 +99,9 @@ export default function LoginPage(){
                           },
                     }
                 }/>
-                <FormControlLabel control={<Checkbox />} label="Permanecer conectado" sx={{width:'100%', color:'#666'}}/>
+                <FormControlLabel control={<Checkbox checked={isChecked} onChange={(e) => handleChecked(e.target.checked)}/>} label="Permanecer conectado" sx={{width:'100%', color:'#666'}}/>
                 <Button
+                disabled={isPending}
                 onClick={handleLogin}
                 fullWidth
                 sx={{
@@ -111,7 +112,9 @@ export default function LoginPage(){
                     '&:hover': {
                         backgroundColor: '#ff6200',
                     }}
-                }>ENTRAR</Button>    
+                }>
+                    {isPending ? <CircularProgress style={{color:'#FFF'}} size={30}/> : "ENTRAR"}
+                </Button>    
             </LoginPagePanelContainer>
             <Snackbar open={alert} autoHideDuration={6000} anchorOrigin={{vertical: "top", horizontal: "right"}} onClose={() => setAlert(false)}>
                     <Alert
