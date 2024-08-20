@@ -33,7 +33,7 @@ export default function ApplicationAppBar(){
                             fontWeight: "bold",
                             fontSize: "15px",
                             color: "#FFF",
-                            fontFamily: "arial",
+                            fontFamily: "Arial, Helvetica, sans-serif",
                             padding: "10px",
                         })}
                     >
@@ -47,7 +47,7 @@ export default function ApplicationAppBar(){
                             fontWeight: "bold",
                             fontSize: "15px",
                             color: "#FFF",
-                            fontFamily: "arial",
+                            fontFamily: "Arial, Helvetica, sans-serif",
                             padding: "10px",
                         })}
                     >
@@ -61,7 +61,7 @@ export default function ApplicationAppBar(){
                             fontWeight: "bold",
                             fontSize: "15px",
                             color: "#FFF",
-                            fontFamily: "arial",
+                            fontFamily: "Arial, Helvetica, sans-serif",
                             padding: "10px",
                         })}
                     >
@@ -75,7 +75,7 @@ export default function ApplicationAppBar(){
                             fontWeight: "bold",
                             fontSize: "15px",
                             color: "#FFF",
-                            fontFamily: "arial",
+                            fontFamily: "Arial, Helvetica, sans-serif",
                             padding: "10px",
                         })}
                     >
@@ -89,7 +89,7 @@ export default function ApplicationAppBar(){
                             fontWeight: "bold",
                             fontSize: "15px",
                             color: "#FFF",
-                            fontFamily: "arial",
+                            fontFamily: "Arial, Helvetica, sans-serif",
                             padding: "10px",
                         })}
                     >
@@ -104,7 +104,7 @@ export default function ApplicationAppBar(){
                         fontWeight: "bold",
                         fontSize: "15px",
                         color: "#FFF",
-                        fontFamily: "arial",
+                        fontFamily: "Arial, Helvetica, sans-serif",
                         padding: "10px",
                         display: "flex",
                         alignItems: "center"
