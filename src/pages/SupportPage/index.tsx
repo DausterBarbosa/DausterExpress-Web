@@ -1,7 +1,7 @@
 import {useState, useEffect, useRef} from "react";
 
 import {initializeApp} from "firebase/app";
-import {getFirestore, collection, addDoc, onSnapshot, orderBy, query, where, or, and} from "firebase/firestore";
+import {getFirestore, collection, addDoc, onSnapshot, orderBy, query, where, or, and, serverTimestamp} from "firebase/firestore";
 
 import GlobalLayout from "../../components/GlobalLayout";
 
@@ -221,7 +221,7 @@ export default function SupportPage(){
                 receiver_id: deliveryman?.id,
                 receiver_name: deliveryman?.nome + " " + deliveryman?.sobrenome,
                 content: messageToSend,
-                timestamp: new Date(),
+                timestamp: serverTimestamp(),
             });
 
             await mutateAsync({
